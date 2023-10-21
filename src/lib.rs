@@ -1,12 +1,12 @@
 use dioxus::prelude::*;
-use dioxus_material::{use_theme_provider, Theme, use_theme};
+use dioxus_material::{use_theme, use_theme_provider, Theme};
 use dioxus_router::prelude::*;
 
 thread_local! {
-    static CONTEXT: RefCell<Vec<(String, Component)>>= RefCell::new(Vec::new());
+    static CONTEXT: RefCell<Vec<(&'static str, Component)>>= RefCell::new(Vec::new());
 }
 
-pub fn register(name: String, component: Component) {
+pub fn register(name: &'static str, component: Component) {
     CONTEXT
         .try_with(|cx| cx.borrow_mut().push((name, component)))
         .unwrap();
@@ -25,7 +25,7 @@ enum Route {
     #[route("/")]
     Home,
     #[route("/:name")]
-    Component { name: String },
+    ComponentScreen { name: String },
 }
 
 #[component]
@@ -34,7 +34,7 @@ fn Home(cx: Scope) -> Element {
 }
 
 #[component]
-fn Component(cx: Scope, name: String) -> Element {
+fn ComponentScreen(cx: Scope, name: String) -> Element {
     let (_name, Child) = CONTEXT
         .try_with(|cx| cx.borrow().iter().find(|(n, _)| n == name).unwrap().clone())
         .unwrap();
@@ -66,8 +66,8 @@ fn Nav(cx: Scope) -> Element {
                 background: "#eeeeee",
                 elements.into_iter().map(move |(name, _)|  {
                     render!(NavItem {
-                        route: Route::Component {
-                            name: name.clone(),
+                        route: Route::ComponentScreen {
+                            name: name.to_string(),
                         },
                         label: "{name}"
                     })
@@ -93,11 +93,32 @@ fn NavItem<'a>(cx: Scope<'a>, route: Route, label: &'a str) -> Element<'a> {
             background: if is_selected { &theme.secondary_container_color } else { "" },
             onclick: |_| {
                 navigator
-                    .push(Route::Component {
+                    .push(Route::ComponentScreen {
                         name: label.to_string(),
                     });
             },
             "{label}"
+        }
+    )
+}
+
+#[component]
+pub fn Look<'a>(
+    cx: Scope<'a>,
+    name: &'static str,
+    controls: Element<'a>,
+    children: Element<'a>,
+) -> Element<'a> {
+    render!(
+        div { flex: 1, display: "flex", flex_direction: "column",
+            div { flex: 1, display: "flex", flex_direction: "column", padding: "20px",
+                h2 { "{name}" }
+                div { flex: 1, children }
+            }
+            div { flex: 1, max_height: "400px", overflow_y: "auto", padding: "20px", background: "#f9f9f9",
+                h4 { "Controls" }
+                controls
+            }
         }
     )
 }
