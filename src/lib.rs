@@ -13,10 +13,14 @@ pub fn register(name: &'static str, component: Component) {
 }
 
 #[component]
-pub fn LookBook<'a>(cx: Scope<'a>) -> Element<'a> {
+pub fn LookBook(cx: Scope, prefix: Option<&'static str>) -> Element {
     use_theme_provider(cx, Theme::default());
 
-    render! { Router::<Route> {} }
+    if let Some(prefix) = prefix {
+        PREFIX.try_with(|cell| *cell.borrow_mut() = prefix).unwrap();
+    }
+
+    render! { Router::<PrefixedRoute> {} }
 }
 
 #[derive(Clone, Routable, Debug, PartialEq)]
@@ -73,7 +77,7 @@ fn Nav(cx: Scope) -> Element {
                     })
                 })
             }
-            Outlet::<Route> {}
+            Outlet::<PrefixedRoute> {}
         }
     })
 }
@@ -81,10 +85,12 @@ fn Nav(cx: Scope) -> Element {
 #[component]
 fn NavItem<'a>(cx: Scope<'a>, route: Route, label: &'a str) -> Element<'a> {
     let navigator = use_navigator(cx);
-    let current_route: Option<Route> = use_route(cx);
+    let current_route: Option<PrefixedRoute> = use_route(cx);
     let theme = use_theme(cx);
 
-    let is_selected = current_route.as_ref() == Some(route);
+    let prefixed_route = PrefixedRoute(route.clone());
+    let is_selected = current_route.as_ref() == Some(&prefixed_route);
+
     render!(
         div {
             padding: "10px 15px",
@@ -93,9 +99,9 @@ fn NavItem<'a>(cx: Scope<'a>, route: Route, label: &'a str) -> Element<'a> {
             background: if is_selected { &theme.secondary_container_color } else { "" },
             onclick: |_| {
                 navigator
-                    .push(Route::ComponentScreen {
+                    .push(PrefixedRoute(Route::ComponentScreen {
                         name: label.to_string(),
-                    });
+                    }));
             },
             "{label}"
         }
@@ -121,4 +127,55 @@ pub fn Look<'a>(
             }
         }
     )
+}
+
+thread_local! {
+    static PREFIX: RefCell<&'static str> = RefCell::new("");
+}
+
+#[derive(Clone, PartialEq)]
+struct PrefixedRoute(Route);
+
+struct DummyError;
+impl std::fmt::Display for DummyError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("DummyError")
+    }
+}
+
+impl std::str::FromStr for PrefixedRoute {
+    type Err = DummyError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let prefix = &*PREFIX.try_with(|cell| *cell.borrow()).unwrap();
+        if s.is_empty() || s.starts_with(prefix) {
+            let route = s[prefix.len()..].parse::<Route>().map_err(|_| DummyError)?;
+            Ok(PrefixedRoute(route))
+        } else {
+            Err(DummyError)
+        }
+    }
+}
+
+impl std::fmt::Display for PrefixedRoute {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let prefix = &*PREFIX.try_with(|cell| *cell.borrow()).unwrap();
+        f.write_str(&prefix)?;
+        self.0.fmt(f)
+    }
+}
+
+impl Routable for PrefixedRoute {
+    const SITE_MAP: &'static [SiteMapSegment] = &[];
+
+    fn render<'a>(&self, cx: &'a ScopeState, level: usize) -> Element<'a> {
+        self.0.render(cx, level)
+    }
+
+    fn static_routes() -> Vec<Self> {
+        Route::static_routes()
+            .into_iter()
+            .map(PrefixedRoute)
+            .collect()
+    }
 }
