@@ -1,4 +1,4 @@
-use dioxus::prelude::{SvgAttributes, *};
+use dioxus::prelude::*;
 use dioxus_material::{Button, TextField};
 use lookbook::{register, Look, LookBook};
 
@@ -18,15 +18,27 @@ fn ButtonPage(cx: Scope) -> Element {
     )
 }
 
+#[component]
+fn TextButtonPage(cx: Scope) -> Element {
+    let label = use_state(cx, || String::from("Text Button"));
+
+    render!(
+        Look {
+            name: "TextButton",
+            controls: render!(
+                TextField { label : "Label", value : label, onchange : move | event : FormEvent |
+                label.set(event.data.value.clone()) }
+            ),
+            Button { onclick: |_| {}, &*** label }
+        }
+    )
+}
+
 fn app(cx: Scope) -> Element {
-    register("Button", |cx| render!( ButtonPage {} ));
+    register("Button", ButtonPage);
+    register("TextButton", TextButtonPage);
 
-    register(
-        "Text Button",
-        |cx| render!( div { "This is a text button!" } ),
-    );
-
-    render!( LookBook {} )
+    render!(LookBook {})
 }
 
 fn main() {
