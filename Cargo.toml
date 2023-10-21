@@ -6,4 +6,6 @@ edition = "2021"
 [dependencies]
 dioxus = { git = "https://github.com/ealmloff/dioxus", branch = "fix-signals-outside-of-runtime" }
 dioxus-web = { git = "https://github.com/ealmloff/dioxus", branch = "fix-signals-outside-of-runtime" }
-
+dioxus-signals = { git = "https://github.com/ealmloff/dioxus", branch = "fix-signals-outside-of-runtime" }
+dioxus-router = { git = "https://github.com/ealmloff/dioxus", branch = "fix-signals-outside-of-runtime", features = ["web"] }
+dioxus-material = { git = "https://github.com/matthunz/dioxus-material" }
