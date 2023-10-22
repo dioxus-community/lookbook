@@ -1,9 +1,10 @@
 use dioxus::prelude::*;
-use dioxus_material::{Button, TextField, TextButton};
-use lookbook::{register, Look, LookBook};
+use dioxus_material::{Button, TextButton, TextField};
+use lookbook::{Look, LookBook};
+use lookbook_macros::preview;
 
-#[component]
-fn ButtonPage(cx: Scope) -> Element {
+#[preview]
+fn ButtonPreview(cx: Scope) -> Element {
     let label = use_state(cx, || String::from("Filled Button"));
 
     render!(
@@ -18,8 +19,8 @@ fn ButtonPage(cx: Scope) -> Element {
     )
 }
 
-#[component]
-fn TextButtonPage(cx: Scope) -> Element {
+#[preview]
+fn TextButtonPreview(cx: Scope) -> Element {
     let label = use_state(cx, || String::from("Text Button"));
 
     render!(
@@ -35,10 +36,9 @@ fn TextButtonPage(cx: Scope) -> Element {
 }
 
 fn app(cx: Scope) -> Element {
-    register("Button", ButtonPage);
-    register("TextButton", TextButtonPage);
-
-    render!( LookBook {} )
+    render!(LookBook {
+        previews: [ButtonPreview, TextButtonPreview]
+    })
 }
 
 fn main() {

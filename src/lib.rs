@@ -1,12 +1,26 @@
 use dioxus::prelude::*;
 use dioxus_router::prelude::*;
 
+pub use lookbook_macros::preview;
+
 mod ui;
 use ui::Wrap;
 pub use ui::{Look, LookBook};
 
 mod prefixed_route;
 pub(crate) use prefixed_route::PrefixedRoute;
+
+#[derive(Clone, Copy)]
+pub struct Preview {
+    name: &'static str,
+    component: Component,
+}
+
+impl Preview {
+    pub const fn new(name: &'static str, component: Component) -> Self {
+        Self { name, component }
+    }
+}
 
 thread_local! {
     static CONTEXT: RefCell<Vec<(&'static str, Component)>>= RefCell::new(Vec::new());
@@ -39,5 +53,5 @@ fn ComponentScreen(cx: Scope, name: String) -> Element {
         .try_with(|cx| cx.borrow().iter().find(|(n, _)| n == name).unwrap().clone())
         .unwrap();
 
-    render!( Child {} )
+    render!(Child {})
 }

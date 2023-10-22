@@ -4,6 +4,12 @@ version = "0.1.0"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 
+[workspace]
+members = [
+    ".",
+    "macros"
+]
+
 [dependencies]
 dioxus = { git = "https://github.com/ealmloff/dioxus", branch = "fix-signals-outside-of-runtime" }
 dioxus-web = { git = "https://github.com/ealmloff/dioxus", branch = "fix-signals-outside-of-runtime" }
@@ -12,3 +18,5 @@ dioxus-router = { git = "https://github.com/ealmloff/dioxus", branch = "fix-sign
 dioxus-material = { git = "https://github.com/matthunz/dioxus-material" }
 dioxus-use-mounted = { git = "https://github.com/matthunz/dioxus-use-mounted" }
 dioxus-resize-observer = { git = "https://github.com/dioxus-community/dioxus-resize-observer" }
+linkme = "0.3.17"
+lookbook-macros = { path = "macros" }
