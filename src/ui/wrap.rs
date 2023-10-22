@@ -7,6 +7,23 @@ use dioxus_router::prelude::*;
 pub fn Wrap(cx: Scope) -> Element {
     let elements = CONTEXT.try_with(|cx| cx.borrow().clone()).unwrap();
 
+    let left = render!(
+        div {
+            flex: 1,
+            display: "flex",
+            flex_direction: "column",
+            gap: "10px",
+            width: "200px",
+            margin: 0,
+            padding: "10px 5px",
+            font_size: "14px",
+            background: "#eeeeee",
+            NavItem { route: Route::Home, label: "Home" }
+            elements.into_iter().map(move | (name, _) | { render!(NavItem { route :
+            Route::ComponentScreen { name : name.to_string(), }, label : "{name}" }) })
+        }
+    );
+
     cx.render(rsx! {
         div {
             position: "absolute",
@@ -19,15 +36,7 @@ pub fn Wrap(cx: Scope) -> Element {
             font_family: "sans-serif",
             margin: 0,
             padding: 0,
-            HorizontalPane {
-                left: render!(
-                    div { flex : 1, display : "flex", flex_direction : "column", gap : "10px", width :
-                    "200px", margin : 0, padding : "10px 5px", font_size : "14px", background :
-                    "#eeeeee", elements.into_iter().map(move | (name, _) | { render!(NavItem { route :
-                    Route::ComponentScreen { name : name.to_string(), }, label : "{name}" }) }) }
-                ),
-                right: render!(Outlet::< PrefixedRoute > {})
-            }
+            HorizontalPane { left: left, right: render!(Outlet::< PrefixedRoute > {}) }
         }
     })
 }
@@ -48,12 +57,7 @@ fn NavItem<'a>(cx: Scope<'a>, route: Route, label: &'a str) -> Element<'a> {
             cursor: "pointer",
             background: if is_selected { &theme.secondary_container_color } else { "" },
             onclick: |_| {
-                navigator
-                    .push(
-                        PrefixedRoute(Route::ComponentScreen {
-                            name: label.to_string(),
-                        }),
-                    );
+                navigator.push(PrefixedRoute(route.clone()));
             },
             "{label}"
         }

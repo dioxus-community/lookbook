@@ -1,4 +1,4 @@
-use crate::{prefixed_route::use_prefix, register, PrefixedRoute, Preview};
+use crate::{prefixed_route::use_prefix, register, PrefixedRoute, Preview, HOME};
 use dioxus::prelude::*;
 use dioxus_material::{use_theme_provider, Theme};
 use dioxus_router::prelude::Router;
@@ -7,13 +7,21 @@ use dioxus_router::prelude::Router;
 pub fn LookBook<I: IntoIterator<Item = Preview> + Clone>(
     cx: Scope,
     previews: I,
+    home: Component,
     prefix: Option<&'static str>,
 ) -> Element {
     use_theme_provider(cx, Theme::default());
 
-    for preview in previews.clone() {
-        register(preview.name, preview.component)
-    }
+    use_effect(cx, (), move |()| {
+        for preview in previews.clone() {
+            register(preview.name, preview.component)
+        }
+
+        HOME.try_with(|cell| *cell.borrow_mut() = Some(*home))
+            .unwrap();
+
+        async move {}
+    });
 
     use_prefix(cx, *prefix);
 

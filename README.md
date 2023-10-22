@@ -1,4 +1,5 @@
 # Lookbook
+UI preview framework for Dioxus
 
 ```rust
 #[preview]
@@ -18,9 +19,14 @@ fn ButtonPreview(cx: Scope) -> Element {
     )
 }
 
+#[component]
+fn Home(cx: Scope) -> Element {
+    render!( h1 { "Lookbook Example" } )
+}
 
 fn app(cx: Scope) -> Element {
     render!(LookBook {
+        home: Home,
         previews: [ButtonPreview]
     })
 }

@@ -24,6 +24,8 @@ impl Preview {
 
 thread_local! {
     static CONTEXT: RefCell<Vec<(&'static str, Component)>>= RefCell::new(Vec::new());
+
+    static HOME: RefCell<Option<Component>> = RefCell::new(None);
 }
 
 pub fn register(name: &'static str, component: Component) {
@@ -42,8 +44,12 @@ enum Route {
 }
 
 #[component]
-fn Home(cx: Scope) -> Element {
-    render! {"Home"}
+fn Home<'a>(cx: Scope<'a>) -> Element<'a> {
+    #[allow(non_snake_case)]
+    let Child = HOME
+        .try_with(|cell| cell.borrow().clone().unwrap())
+        .unwrap();
+    render!( Child {} )
 }
 
 #[component]
