@@ -38,7 +38,7 @@ fn app(cx: Scope) -> Element {
     register("Button", ButtonPage);
     register("TextButton", TextButtonPage);
 
-    render!( LookBook {} )
+    render!(LookBook {})
 }
 
 fn main() {
