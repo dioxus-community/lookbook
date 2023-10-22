@@ -1,4 +1,6 @@
 use dioxus::prelude::*;
+use dioxus_resize_observer::use_size;
+use dioxus_use_mounted::use_mounted;
 
 #[component]
 pub fn HorizontalPane<'a>(cx: Scope<'a>, left: Element<'a>, right: Element<'a>) -> Element<'a> {
@@ -38,17 +40,25 @@ pub fn VerticalPane<'a>(cx: Scope<'a>, top: Element<'a>, bottom: Element<'a>) ->
     let height = use_state(cx, || 200.);
     let is_dragging = use_state(cx, || false);
 
+    let container_ref = use_mounted(cx);
+    let container_size = use_size(cx, container_ref);
+
     render!(
-        div { position: "relative", flex: 1, display: "flex", flex_direction: "column",
+        div {
+            position: "relative",
+            flex: 1,
+            display: "flex",
+            flex_direction: "column",
+            onmounted: move |event| container_ref.onmounted(event),
             div {
                 position: "absolute",
                 display: if **is_dragging { "block" } else { "none" },
                 width: "100%",
                 height: "100%",
                 onmouseup: move |_| { is_dragging.set(false) },
-                onmousemove: move |event| height.set(event.data.client_coordinates().y)
+                onmousemove: move |event| height.set(container_size.height() - event.data.client_coordinates().y)
             }
-            div { display: "flex", flex_direction: "column", height: "{height}px", overflow: "auto", top }
+            top,
             div {
                 width: "100%",
                 padding: "5px 0",
@@ -57,7 +67,7 @@ pub fn VerticalPane<'a>(cx: Scope<'a>, top: Element<'a>, bottom: Element<'a>) ->
                 onmousedown: move |_| { is_dragging.set(true) },
                 div { height: "2px", width: "100%", background: "#ccc" }
             }
-            bottom
+            div { display: "flex", flex_direction: "column", height: "{height}px", overflow: "auto", bottom }
         }
     )
 }
