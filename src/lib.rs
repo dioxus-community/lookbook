@@ -2,7 +2,7 @@ use dioxus::prelude::*;
 use dioxus_router::prelude::*;
 
 mod ui;
-use ui::Nav;
+use ui::Wrap;
 pub use ui::{Look, LookBook};
 
 mod prefixed_route;
@@ -20,7 +20,7 @@ pub fn register(name: &'static str, component: Component) {
 
 #[derive(Clone, Routable, Debug, PartialEq)]
 enum Route {
-    #[layout(Nav)]
+    #[layout(Wrap)]
     #[route("/")]
     Home,
     #[route("/:name")]
@@ -39,5 +39,5 @@ fn ComponentScreen(cx: Scope, name: String) -> Element {
         .try_with(|cx| cx.borrow().iter().find(|(n, _)| n == name).unwrap().clone())
         .unwrap();
 
-    render!(Child {})
+    render!( Child {} )
 }

@@ -4,11 +4,14 @@ use dioxus_material::use_theme;
 use dioxus_router::prelude::*;
 
 #[component]
-pub fn Nav(cx: Scope) -> Element {
+pub fn Wrap(cx: Scope) -> Element {
     let elements = CONTEXT.try_with(|cx| cx.borrow().clone()).unwrap();
 
     cx.render(rsx! {
         div {
+            position: "absolute",
+            top: 0,
+            left: 0,
             width: "100vw",
             height: "100vh",
             display: "flex",

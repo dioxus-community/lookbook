@@ -6,5 +6,5 @@ pub use look_book::LookBook;
 
 mod pane;
 
-mod nav;
-pub use nav::Nav;
+mod wrap;
+pub use wrap::Wrap;
