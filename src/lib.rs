@@ -53,5 +53,5 @@ fn ComponentScreen(cx: Scope, name: String) -> Element {
         .try_with(|cx| cx.borrow().iter().find(|(n, _)| n == name).unwrap().clone())
         .unwrap();
 
-    render!(Child {})
+    render!( Child {} )
 }
