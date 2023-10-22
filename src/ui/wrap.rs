@@ -33,7 +33,6 @@ pub fn Wrap(cx: Scope) -> Element {
             TextField {
                 label: "Search",
                 value: query,
-                width: "150px",
                 font_size: 14.,
                 onchange: move |event: FormEvent| query.set(event.value.clone())
             }
