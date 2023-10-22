@@ -1,11 +1,22 @@
 use crate::{prefixed_route::PrefixedRoute, ui::pane::HorizontalPane, Route, CONTEXT};
 use dioxus::prelude::*;
-use dioxus_material::use_theme;
+use dioxus_material::{use_theme, TextField};
 use dioxus_router::prelude::*;
 
 #[component]
 pub fn Wrap(cx: Scope) -> Element {
-    let elements = CONTEXT.try_with(|cx| cx.borrow().clone()).unwrap();
+    let query = use_state(cx, || String::new());
+    let elements = use_memo(cx, query, move |_| {
+        CONTEXT
+            .try_with(|cx| {
+                cx.borrow()
+                    .iter()
+                    .filter(|(name, _)| name.to_lowercase().contains(&query.to_lowercase()))
+                    .copied()
+                    .collect::<Vec<_>>()
+            })
+            .unwrap()
+    });
 
     let left = render!(
         div {
@@ -19,6 +30,13 @@ pub fn Wrap(cx: Scope) -> Element {
             font_size: "14px",
             background: "#eeeeee",
             NavItem { route: Route::Home, label: "Home" }
+            TextField {
+                label: "Search",
+                value: query,
+                width: "150px",
+                font_size: 14.,
+                onchange: move |event: FormEvent| query.set(event.value.clone())
+            }
             elements.into_iter().map(move | (name, _) | { render!(NavItem { route :
             Route::ComponentScreen { name : name.to_string(), }, label : "{name}" }) })
         }

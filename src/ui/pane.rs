@@ -14,7 +14,7 @@ pub fn HorizontalPane<'a>(cx: Scope<'a>, left: Element<'a>, right: Element<'a>) 
             display: "flex",
             flex_direction: "row",
             onmouseup: move |_| { is_dragging.set(false) },
-            prevent_default: if ** is_dragging { "onmousedown onmousemove" } else { "" },
+            prevent_default: if **is_dragging { "onmousedown onmousemove" } else { "" },
             onmousemove: move |event| {
                 if **is_dragging {
                     width.set(event.data.client_coordinates().x)
@@ -57,7 +57,7 @@ pub fn VerticalPane<'a>(cx: Scope<'a>, top: Element<'a>, bottom: Element<'a>) ->
                 width: "100%",
                 height: "100%",
                 onmouseup: move |_| { is_dragging.set(false) },
-                prevent_default: if ** is_dragging { "onmousedown onmousemove" } else { "" },
+                prevent_default: if **is_dragging { "onmousedown onmousemove" } else { "" },
                 onmousemove: move |event| height.set(container_size.height() - event.data.client_coordinates().y)
             }
             top,
