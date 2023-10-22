@@ -44,4 +44,3 @@ fn app(cx: Scope) -> Element {
 fn main() {
     dioxus_web::launch(app);
 }
-

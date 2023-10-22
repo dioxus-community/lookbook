@@ -2,6 +2,9 @@ use dioxus::prelude::*;
 use dioxus_material::{use_theme, use_theme_provider, Theme};
 use dioxus_router::prelude::*;
 
+mod pane;
+use crate::pane::{HorizontalPane, VerticalPane};
+
 thread_local! {
     static CONTEXT: RefCell<Vec<(&'static str, Component)>>= RefCell::new(Vec::new());
 }
@@ -43,7 +46,7 @@ fn ComponentScreen(cx: Scope, name: String) -> Element {
         .try_with(|cx| cx.borrow().iter().find(|(n, _)| n == name).unwrap().clone())
         .unwrap();
 
-    render! { Child {} }
+    render!(Child {})
 }
 
 #[component]
@@ -59,25 +62,15 @@ fn Nav(cx: Scope) -> Element {
             font_family: "sans-serif",
             margin: 0,
             padding: 0,
-            div {
-                display: "flex",
-                flex_direction: "column",
-                gap: "10px",
-                width: "200px",
-                margin: 0,
-                padding: "10px 5px",
-                font_size: "14px",
-                background: "#eeeeee",
-                elements.into_iter().map(move |(name, _)|  {
-                    render!(NavItem {
-                        route: Route::ComponentScreen {
-                            name: name.to_string(),
-                        },
-                        label: "{name}"
-                    })
-                })
+            HorizontalPane {
+                left: render!(
+                    div { flex : 1, display : "flex", flex_direction : "column", gap : "10px", width :
+                    "200px", margin : 0, padding : "10px 5px", font_size : "14px", background :
+                    "#eeeeee", elements.into_iter().map(move | (name, _) | { render!(NavItem { route :
+                    Route::ComponentScreen { name : name.to_string(), }, label : "{name}" }) }) }
+                ),
+                right: render!(Outlet::< PrefixedRoute > {})
             }
-            Outlet::<PrefixedRoute> {}
         }
     })
 }
@@ -99,9 +92,11 @@ fn NavItem<'a>(cx: Scope<'a>, route: Route, label: &'a str) -> Element<'a> {
             background: if is_selected { &theme.secondary_container_color } else { "" },
             onclick: |_| {
                 navigator
-                    .push(PrefixedRoute(Route::ComponentScreen {
-                        name: label.to_string(),
-                    }));
+                    .push(
+                        PrefixedRoute(Route::ComponentScreen {
+                            name: label.to_string(),
+                        }),
+                    );
             },
             "{label}"
         }
@@ -117,13 +112,16 @@ pub fn Look<'a>(
 ) -> Element<'a> {
     render!(
         div { flex: 1, display: "flex", flex_direction: "column",
-            div { flex: 1, display: "flex", flex_direction: "column", padding: "20px",
-                h2 { "{name}" }
-                div { flex: 1, children }
-            }
-            div { flex: 1, max_height: "400px", overflow_y: "auto", padding: "20px", background: "#f9f9f9",
-                h4 { "Controls" }
-                controls
+            VerticalPane {
+                top: render!(
+                    div { padding : "20px", h2 { "{name}" } } div { flex : 1, display : "flex",
+                    flex_direction : "column", padding : "20px", display : "flex", justify_content :
+                    "center", align_items : "center", div { flex : 1, children } }
+                ),
+                bottom: render!(
+                    div { flex : 1, overflow_y : "auto", padding : "20px", background : "#f9f9f9", h4 {
+                    "Controls" } controls }
+                )
             }
         }
     )
@@ -148,6 +146,7 @@ impl std::str::FromStr for PrefixedRoute {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let prefix = &*PREFIX.try_with(|cell| *cell.borrow()).unwrap();
+
         if s.is_empty() || s.starts_with(prefix) {
             let route = s[prefix.len()..].parse::<Route>().map_err(|_| DummyError)?;
             Ok(PrefixedRoute(route))
