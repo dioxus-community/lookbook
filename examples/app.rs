@@ -17,7 +17,7 @@ fn ButtonPreview(cx: Scope) -> Element {
 
     render!(
         Look { name: "Button", controls: controls,
-            Button { onclick: |_| {}, &*** label }
+            Button { onpress: |_| {}, &*** label }
         }
     )
 }
@@ -36,7 +36,7 @@ fn TextButtonPreview(cx: Scope) -> Element {
 
     render!(
         Look { name: "TextButton", controls: controls,
-            TextButton { onclick: |_| {}, &*** label }
+            TextButton { onpress: |_| {}, &*** label }
         }
     )
 }
