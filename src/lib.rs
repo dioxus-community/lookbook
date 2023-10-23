@@ -61,3 +61,53 @@ fn ComponentScreen(cx: Scope, name: String) -> Element {
 
     render!(Child {})
 }
+
+pub trait Stateful<'a> {
+    type State;
+
+    fn state() -> Self::State;
+
+    fn from_state<T>(cx: Scope<'a, T>, state: &Self::State) -> Self;
+
+    fn control(cx: Scope<'a>, state: &'a UseState<Self::State>) -> Element<'a>;
+}
+
+impl<'a> Stateful<'a> for &'a str {
+    type State = String;
+
+    fn state() -> Self::State {
+        String::new()
+    }
+
+    fn from_state<T>(cx: Scope<'a, T>, state: &Self::State) -> Self {
+        cx.bump().alloc(state.clone())
+    }
+
+    fn control(cx: Scope<'a>, state: &'a UseState<Self::State>) -> Element<'a> {
+        render!(dioxus_material::TextField {
+            label: "Label",
+            value: state,
+            onchange: move |event: FormEvent| state.set(event.data.value.clone())
+        })
+    }
+}
+
+impl<'a> Stateful<'a> for u32 {
+    type State = u32;
+
+    fn state() -> Self::State {
+        0
+    }
+
+    fn from_state<T>(_cx: Scope<'a, T>, state: &Self::State) -> Self {
+        *state
+    }
+
+    fn control(cx: Scope<'a>, state: &'a UseState<Self::State>) -> Element<'a> {
+        render!(dioxus_material::TextField {
+            label: "Label",
+            value: "{state}",
+            onchange: move |event: FormEvent| state.set(event.data.value.parse().unwrap())
+        })
+    }
+}
