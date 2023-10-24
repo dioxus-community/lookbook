@@ -2,32 +2,44 @@
 UI preview framework for Dioxus
 
 ```rust
+/// To-Do Task.
 #[preview]
-fn ButtonPreview(cx: Scope) -> Element {
-    let label = use_state(cx, || String::from("Filled Button"));
+pub fn TaskPreview<'a>(
+    cx: Scope<'a>,
 
-    let controls = render!(TextField {
-        label: "Label",
-        value: label,
-        onchange: move |event: FormEvent| label.set(event.data.value.clone())
-    });
+    /// Label of the task.
+    label: &'a str,
 
+    /// Content of the task.
+    content: &'a str,
+) -> Element<'a> {
     render!(
-        Look { name: "Button", controls: controls,
-            Button { onclick: |_| {}, &*** label }
+        div {
+            h4 { "{label}" }
+            p { "{content}" }
         }
     )
 }
+```
 
-#[component]
-fn Home(cx: Scope) -> Element {
-    render!( h1 { "Lookbook Example" } )
-}
+## Usage
+First add Lookbook as a dependency to your project.
 
+```sh
+cargo add lookbook --git https://github.com/matthunz/lookbook
+```
+
+Then create a preview like the one above and add it to a lookbook.
+
+```rust
 fn app(cx: Scope) -> Element {
     render!(LookBook {
-        home: Home,
-        previews: [ButtonPreview]
+        home: |cx| render!("Home"),
+        previews: [TaskPreview]
     })
+}
+
+fn main() {
+    dioxus_web::launch(app)
 }
 ```

@@ -1,6 +1,6 @@
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{parse_macro_input, Attribute, Expr, FnArg, ItemFn, Lit, PatType};
+use syn::{parse_macro_input, Attribute, Expr, FnArg, ItemFn, Lit};
 
 fn collect_docs(attrs: &[Attribute]) -> String {
     let mut docs = String::new();
@@ -19,7 +19,7 @@ fn collect_docs(attrs: &[Attribute]) -> String {
 }
 
 #[proc_macro_attribute]
-pub fn preview(attrs: TokenStream, input: TokenStream) -> TokenStream {
+pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
     let item = parse_macro_input!(input as ItemFn);
 
     let docs = collect_docs(&item.attrs);

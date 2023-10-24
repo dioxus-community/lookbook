@@ -2,16 +2,15 @@ use dioxus::prelude::*;
 use lookbook::LookBook;
 use lookbook_macros::preview;
 
-/// Task docs
-///
-/// ## Props
-/// - label: &str
-/// - content: &str
+/// To-Do Task.
 #[preview]
 pub fn TaskPreview<'a>(
     cx: Scope<'a>,
-    /// Test
+
+    /// Label of the task.
     label: &'a str,
+
+    /// Content of the task.
     content: &'a str,
 ) -> Element<'a> {
     render!(
