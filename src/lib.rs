@@ -62,30 +62,30 @@ fn ComponentScreen(cx: Scope, name: String) -> Element {
     render!(Child {})
 }
 
-pub trait Stateful<'a> {
+pub trait Stateful<'a>: Sized {
     type State;
 
-    fn state() -> Self::State;
+    fn state(default: Option<Self>) -> Self::State;
 
     fn from_state<T>(cx: Scope<'a, T>, state: &Self::State) -> Self;
 
-    fn control(cx: Scope<'a>, state: &'a UseState<Self::State>) -> Element<'a>;
+    fn control(cx: Scope<'a>, name: &'static str, state: &'a UseState<Self::State>) -> Element<'a>;
 }
 
 impl<'a> Stateful<'a> for &'a str {
     type State = String;
 
-    fn state() -> Self::State {
-        String::new()
+    fn state(default: Option<Self>) -> Self::State {
+        default.map(String::from).unwrap_or_default()
     }
 
     fn from_state<T>(cx: Scope<'a, T>, state: &Self::State) -> Self {
         cx.bump().alloc(state.clone())
     }
 
-    fn control(cx: Scope<'a>, state: &'a UseState<Self::State>) -> Element<'a> {
+    fn control(cx: Scope<'a>, name: &'static str, state: &'a UseState<Self::State>) -> Element<'a> {
         render!(dioxus_material::TextField {
-            label: "Label",
+            label: name,
             value: state,
             onchange: move |event: FormEvent| state.set(event.data.value.clone())
         })
@@ -95,7 +95,7 @@ impl<'a> Stateful<'a> for &'a str {
 impl<'a> Stateful<'a> for u32 {
     type State = u32;
 
-    fn state() -> Self::State {
+    fn state(_default: Option<Self>) -> Self::State {
         0
     }
 
@@ -103,15 +103,11 @@ impl<'a> Stateful<'a> for u32 {
         *state
     }
 
-    fn control(cx: Scope<'a>, state: &'a UseState<Self::State>) -> Element<'a> {
+    fn control(cx: Scope<'a>, name: &'static str, state: &'a UseState<Self::State>) -> Element<'a> {
         render!(dioxus_material::TextField {
-            label: "Label",
+            label: name,
             value: "{state}",
             onchange: move |event: FormEvent| state.set(event.data.value.parse().unwrap())
         })
     }
-}
-
-fn f() {
-    let x = rsx!(div {});
 }

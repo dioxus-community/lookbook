@@ -1,22 +1,6 @@
 use proc_macro::TokenStream;
-use quote::quote;
-use syn::{parse_macro_input, token, Attribute, Expr, FnArg, ItemFn, Lit};
-
-fn collect_docs(attrs: &[Attribute]) -> String {
-    let mut docs = String::new();
-    for attr in attrs {
-        if attr.path().get_ident().unwrap().to_string() == "doc" {
-            let meta = attr.meta.require_name_value().unwrap();
-            if let Expr::Lit(expr) = &meta.value {
-                if let Lit::Str(lit) = &expr.lit {
-                    docs.push_str(&lit.value());
-                    docs.push('\n');
-                }
-            }
-        }
-    }
-    docs
-}
+use quote::{quote, ToTokens};
+use syn::{parse_macro_input, Attribute, Expr, FnArg, ItemFn, Lit, Meta};
 
 #[proc_macro_attribute]
 pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
@@ -36,17 +20,42 @@ pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
     let mut controls = Vec::new();
     for arg in item.sig.inputs.into_iter().skip(1) {
         match arg {
-            FnArg::Typed(typed) => {
-                let docs = collect_docs(&typed.attrs);
+            FnArg::Typed(typed_arg) => {
+                let mut docs = String::new();
+                let mut default = quote!(None);
 
-                let ty = typed.ty;
-                let pat = typed.pat;
+                for attr in typed_arg.attrs {
+                    let path = attr.path().get_ident().unwrap().to_string();
+                    if path == "doc" {
+                        let meta = attr.meta.require_name_value().unwrap();
+                        if let Expr::Lit(expr) = &meta.value {
+                            if let Lit::Str(lit) = &expr.lit {
+                                docs.push_str(&lit.value());
+                                docs.push('\n');
+                            }
+                        }
+                    } else if path == "lookbook" {
+                        let path = attr.meta.require_list().unwrap();
+                        let meta: Meta = syn::parse2(path.tokens.clone()).unwrap();
 
-                states.push(quote!(let #pat = use_state(cx, || <#ty>::state());));
+                        if let Meta::NameValue(meta_name_value) = meta {
+                            if meta_name_value.path.is_ident("default") {
+                                let value = meta_name_value.value;
+                                default = quote!(Some(#value));
+                            }
+                        }
+                    }
+                }
+
+                let ty = typed_arg.ty;
+                let pat = typed_arg.pat;
+                let pat_name = pat.to_token_stream().to_string();
+
+                states.push(quote!(let #pat = use_state(cx, || <#ty>::state(#default));));
                 from_states.push(quote!(let #pat = <#ty>::from_state(cx, &**#pat);));
 
                 controls.push(quote!(div {
-                    <#ty>::control(cx, #pat)
+                    <#ty>::control(cx, #pat_name, #pat)
                     p { #docs },
                 }));
             }
@@ -95,4 +104,20 @@ fn render_with_location(
     let location = format!("__lookbook/{name}.rs:0:0:{idx}");
     let rsx: dioxus_rsx::CallBody = syn::parse2(tokens).unwrap();
     rsx.render_with_location(location)
+}
+
+fn collect_docs(attrs: &[Attribute]) -> String {
+    let mut docs = String::new();
+    for attr in attrs {
+        if attr.path().get_ident().unwrap().to_string() == "doc" {
+            let meta = attr.meta.require_name_value().unwrap();
+            if let Expr::Lit(expr) = &meta.value {
+                if let Lit::Str(lit) = &expr.lit {
+                    docs.push_str(&lit.value());
+                    docs.push('\n');
+                }
+            }
+        }
+    }
+    docs
 }

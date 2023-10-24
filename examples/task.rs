@@ -3,14 +3,19 @@ use lookbook::LookBook;
 use lookbook_macros::preview;
 
 /// To-Do Task.
+/// ```
+/// fn main
+/// ```
 #[preview]
 pub fn TaskPreview<'a>(
     cx: Scope<'a>,
 
     /// Label of the task.
+    #[lookbook(default = "Ice skating")]
     label: &'a str,
 
     /// Content of the task.
+    #[lookbook(default = "Central Park")]
     content: &'a str,
 ) -> Element<'a> {
     render!(
