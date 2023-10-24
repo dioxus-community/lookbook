@@ -18,5 +18,6 @@ dioxus-router = { git = "https://github.com/dioxuslabs/dioxus", features = ["web
 dioxus-material = { git = "https://github.com/matthunz/dioxus-material" }
 dioxus-use-mounted = { git = "https://github.com/matthunz/dioxus-use-mounted" }
 dioxus-resize-observer = { git = "https://github.com/dioxus-community/dioxus-resize-observer" }
+dioxus_markdown = { git = "https://github.com/matthunz/markdown" }
 linkme = "0.3.17"
 lookbook-macros = { path = "macros" }

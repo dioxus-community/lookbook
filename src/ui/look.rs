@@ -1,15 +1,20 @@
 use crate::ui::pane::VerticalPane;
 use dioxus::prelude::*;
+use dioxus_markdown::Markdown;
 
 #[component]
 pub fn Look<'a>(
     cx: Scope<'a>,
     name: &'static str,
+    docs: &'static str,
     controls: Element<'a>,
     children: Element<'a>,
 ) -> Element<'a> {
     let top = render!(
-        div { padding: "20px", h2 { "{name}" } }
+        div { padding: "20px",
+            h2 { "{name}" }
+            Markdown { content: "{docs}" }
+        }
         div {
             flex: 1,
             display: "flex",

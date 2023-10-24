@@ -1,10 +1,24 @@
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{parse_macro_input, FnArg, ItemFn, PatType};
+use syn::{parse_macro_input, Attribute, Expr, FnArg, ItemFn, Lit, PatType};
 
 #[proc_macro_attribute]
-pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
+pub fn preview(attrs: TokenStream, input: TokenStream) -> TokenStream {
     let item = parse_macro_input!(input as ItemFn);
+
+    let mut docs = String::new();
+    for attr in &item.attrs {
+        if attr.path().get_ident().unwrap().to_string() == "doc" {
+            let meta = attr.meta.require_name_value().unwrap();
+            if let Expr::Lit(expr) = &meta.value {
+                if let Lit::Str(lit) = &expr.lit {
+                    docs.push_str(&lit.value());
+                    docs.push('\n');
+                }
+            }
+        }
+    }
+
     let ident = item.sig.ident.clone();
     let block = item.block.clone();
     let vis = item.vis.clone();
@@ -20,9 +34,9 @@ pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
             FnArg::Typed(typed) => {
                 let ty = typed.ty;
                 let pat = typed.pat;
-                
+
                 states.push(quote!(let #pat = use_state(cx, || <#ty>::state());));
-                
+
                 from_states.push(quote!(let #pat = <#ty>::from_state(cx, &**#pat);));
 
                 controls.push(quote!(<#ty>::control(cx, #pat),));
@@ -30,7 +44,6 @@ pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
             _ => todo!(),
         }
     }
-
 
     let expanded = quote! {
         #[allow(non_upper_case_globals)]
@@ -48,7 +61,7 @@ pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
                 #(#from_states)*
 
                 render!(
-                    lookbook::Look { name: #name, controls: controls,
+                    lookbook::Look { name: #name, docs: #docs, controls: controls,
                         #block
                     }
                 )
