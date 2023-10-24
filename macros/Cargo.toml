@@ -9,3 +9,5 @@ proc-macro = true
 [dependencies]
 quote = "1.0.33"
 syn = { version = "2.0.38", features = ["full"] }
+dioxus-rsx = { git = "https://github.com/dioxuslabs/dioxus" }
+proc-macro2 = "1.0.69"

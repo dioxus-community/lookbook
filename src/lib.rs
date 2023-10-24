@@ -111,3 +111,7 @@ impl<'a> Stateful<'a> for u32 {
         })
     }
 }
+
+fn f() {
+    let x = rsx!(div {});
+}

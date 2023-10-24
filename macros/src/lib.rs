@@ -1,6 +1,6 @@
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{parse_macro_input, Attribute, Expr, FnArg, ItemFn, Lit};
+use syn::{parse_macro_input, token, Attribute, Expr, FnArg, ItemFn, Lit};
 
 fn collect_docs(attrs: &[Attribute]) -> String {
     let mut docs = String::new();
@@ -54,6 +54,18 @@ pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
         }
     }
 
+    let controls = render_with_location(quote!(#(#controls)*), name, 0);
+
+    let look = render_with_location(
+        quote!(
+            lookbook::Look { name: #name, docs: #docs, controls: controls,
+                #block
+            }
+        ),
+        name,
+        1,
+    );
+
     let expanded = quote! {
         #[allow(non_upper_case_globals)]
         #vis static #ident: lookbook::Preview = lookbook::Preview::new(#name, |cx| {
@@ -63,20 +75,24 @@ pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
             fn f<'a>(cx: Scope<'a>) -> Element<'a> {
                 #(#states)*
 
-                let controls = render!(
-                    #(#controls)*
-                );
+                let controls = cx.render(#controls);
 
                 #(#from_states)*
 
-                render!(
-                    lookbook::Look { name: #name, docs: #docs, controls: controls,
-                        #block
-                    }
-                )
+                cx.render(#look)
             }
             f(cx)
         });
     };
     expanded.into()
+}
+
+fn render_with_location(
+    tokens: proc_macro2::TokenStream,
+    name: &str,
+    idx: u8,
+) -> proc_macro2::TokenStream {
+    let location = format!("__lookbook/{name}.rs:0:0:{idx}");
+    let rsx: dioxus_rsx::CallBody = syn::parse2(tokens).unwrap();
+    rsx.render_with_location(location)
 }
