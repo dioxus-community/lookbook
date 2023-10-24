@@ -1,6 +1,8 @@
 # Lookbook
 UI preview framework for Dioxus
 
+[Demo](https://matthunz.github.io/)
+
 ```rust
 /// To-Do Task.
 #[preview]
@@ -45,3 +47,8 @@ fn main() {
     dioxus_web::launch(app)
 }
 ```
+
+Run with `dx serve`!
+
+## Running examples
+Run the examples with `dx serve {name}`
