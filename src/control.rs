@@ -26,11 +26,13 @@ impl<'a> Control<'a> for &'a str {
     }
 
     fn control(cx: Scope<'a>, name: &'static str, state: &'a UseState<Self::State>) -> Element<'a> {
-        render!(dioxus_material::TextField {
-            label: name,
-            value: state,
-            onchange: move |event: FormEvent| state.set(event.data.value.clone())
-        })
+        render!(
+            dioxus_material::TextField {
+                label: name,
+                value: state,
+                onchange: move |event: FormEvent| state.set(event.data.value.clone())
+            }
+        )
     }
 }
 
@@ -46,10 +48,12 @@ impl<'a> Control<'a> for u32 {
     }
 
     fn control(cx: Scope<'a>, name: &'static str, state: &'a UseState<Self::State>) -> Element<'a> {
-        render!(dioxus_material::TextField {
-            label: name,
-            value: "{state}",
-            onchange: move |event: FormEvent| state.set(event.data.value.parse().unwrap())
-        })
+        render!(
+            dioxus_material::TextField {
+                label: name,
+                value: "{state}",
+                onchange: move |event: FormEvent| state.set(event.data.value.parse().unwrap())
+            }
+        )
     }
 }

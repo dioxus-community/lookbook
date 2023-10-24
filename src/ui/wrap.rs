@@ -1,6 +1,6 @@
 use crate::{prefixed_route::PrefixedRoute, ui::pane::HorizontalPane, Route, CONTEXT};
 use dioxus::prelude::*;
-use dioxus_material::{use_theme, TextField};
+use dioxus_material::{use_theme, Icon, IconFont, IconKind, TextField};
 use dioxus_router::prelude::*;
 
 #[component]
@@ -18,6 +18,9 @@ pub fn Wrap(cx: Scope) -> Element {
             .unwrap()
     });
 
+    let navigator = use_navigator(cx);
+    let theme = use_theme(cx);
+
     let left = render!(
         div {
             flex: 1,
@@ -26,22 +29,43 @@ pub fn Wrap(cx: Scope) -> Element {
             gap: "10px",
             width: "200px",
             margin: 0,
-            padding: "10px 5px",
+            padding: "10px 20px",
             font_size: "14px",
             background: "#eeeeee",
-            NavItem { route: Route::Home, label: "Home" }
-            TextField {
-                label: "Search",
-                value: query,
+            div { display: "flex", flex_direction: "row", align_items: "center", justify_content: "space-between",
+                h1 {
+                    cursor: "pointer",
+                    margin_bottom: "10px",
+                    onclick: |_| {
+                        navigator.push(Route::Home);
+                    },
+                    "Lookbook"
+                }
+                Icon { kind: IconKind::Settings }
+            }
+            input {
+                placeholder: "Search",
+                value: "{query}",
+                width: "100%",
+                margin: "5px",
+                margin_bottom: "20px",
+                padding: "10px",
+                border: "2px solid #999",
+                border_radius: &*theme.border_radius_small,
+                outline: "none",
+                background: "none",
                 font_size: 14.,
-                onchange: move |event: FormEvent| query.set(event.value.clone())
+                oninput: move |event: FormEvent| query.set(event.value.clone())
             }
             elements.into_iter().map(move | (name, _) | { render!(NavItem { route :
             Route::ComponentScreen { name : name.to_string(), }, label : "{name}" }) })
         }
     );
 
+    let right = render!(Outlet::<PrefixedRoute> {});
+
     cx.render(rsx! {
+        IconFont {}
         div {
             position: "absolute",
             top: 0,
@@ -53,7 +77,7 @@ pub fn Wrap(cx: Scope) -> Element {
             font_family: "sans-serif",
             margin: 0,
             padding: 0,
-            HorizontalPane { left: left, right: render!(Outlet::< PrefixedRoute > {}) }
+            HorizontalPane { left: left, right: right }
         }
     })
 }

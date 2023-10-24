@@ -4,7 +4,7 @@ use dioxus_use_mounted::use_mounted;
 
 #[component]
 pub fn HorizontalPane<'a>(cx: Scope<'a>, left: Element<'a>, right: Element<'a>) -> Element<'a> {
-    let width = use_state(cx, || 200.);
+    let width = use_state(cx, || 250.);
     let is_dragging = use_state(cx, || false);
 
     render!(
