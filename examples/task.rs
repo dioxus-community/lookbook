@@ -24,7 +24,10 @@ pub fn TaskPreview<'a>(
 }
 
 fn app(cx: Scope) -> Element {
-    render!( LookBook { home: |cx| render!("Home"), previews: [TaskPreview] } )
+    render!(LookBook {
+        home: |cx| render!("Home"),
+        previews: [TaskPreview]
+    })
 }
 
 fn main() {

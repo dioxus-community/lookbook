@@ -38,11 +38,21 @@ pub fn HorizontalPane<'a>(cx: Scope<'a>, left: Element<'a>, right: Element<'a>) 
 
 #[component]
 pub fn VerticalPane<'a>(cx: Scope<'a>, top: Element<'a>, bottom: Element<'a>) -> Element<'a> {
-    let height = use_state(cx, || 200.);
-    let is_dragging = use_state(cx, || false);
-
     let container_ref = use_mounted(cx);
     let container_size = use_size(cx, container_ref);
+
+    let height = use_state(cx, || 0.);
+
+    let mut count = use_state(cx, || 0);
+    use_effect(cx, &container_size.height(), move |h| {
+        if **count <= 2 {
+            height.set(h / 2.);
+            count += 1;
+        }
+        async {}
+    });
+
+    let is_dragging = use_state(cx, || false);
 
     render!(
         div {

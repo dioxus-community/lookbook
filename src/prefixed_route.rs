@@ -1,7 +1,7 @@
-use std::fmt;
 use crate::Route;
 use dioxus::prelude::*;
 use dioxus_router::prelude::*;
+use std::fmt;
 
 thread_local! {
     static PREFIX: RefCell<&'static str> = RefCell::new("");
