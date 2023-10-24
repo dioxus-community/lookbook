@@ -3,6 +3,9 @@ use dioxus_router::prelude::*;
 
 pub use lookbook_macros::preview;
 
+mod control;
+pub use control::Control;
+
 mod ui;
 use ui::Wrap;
 pub use ui::{Look, LookBook};
@@ -60,54 +63,4 @@ fn ComponentScreen(cx: Scope, name: String) -> Element {
         .unwrap();
 
     render!(Child {})
-}
-
-pub trait Stateful<'a>: Sized {
-    type State;
-
-    fn state(default: Option<Self>) -> Self::State;
-
-    fn from_state<T>(cx: Scope<'a, T>, state: &Self::State) -> Self;
-
-    fn control(cx: Scope<'a>, name: &'static str, state: &'a UseState<Self::State>) -> Element<'a>;
-}
-
-impl<'a> Stateful<'a> for &'a str {
-    type State = String;
-
-    fn state(default: Option<Self>) -> Self::State {
-        default.map(String::from).unwrap_or_default()
-    }
-
-    fn from_state<T>(cx: Scope<'a, T>, state: &Self::State) -> Self {
-        cx.bump().alloc(state.clone())
-    }
-
-    fn control(cx: Scope<'a>, name: &'static str, state: &'a UseState<Self::State>) -> Element<'a> {
-        render!(dioxus_material::TextField {
-            label: name,
-            value: state,
-            onchange: move |event: FormEvent| state.set(event.data.value.clone())
-        })
-    }
-}
-
-impl<'a> Stateful<'a> for u32 {
-    type State = u32;
-
-    fn state(_default: Option<Self>) -> Self::State {
-        0
-    }
-
-    fn from_state<T>(_cx: Scope<'a, T>, state: &Self::State) -> Self {
-        *state
-    }
-
-    fn control(cx: Scope<'a>, name: &'static str, state: &'a UseState<Self::State>) -> Element<'a> {
-        render!(dioxus_material::TextField {
-            label: name,
-            value: "{state}",
-            onchange: move |event: FormEvent| state.set(event.data.value.parse().unwrap())
-        })
-    }
 }

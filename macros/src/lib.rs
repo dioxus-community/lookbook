@@ -91,7 +91,7 @@ pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
         #[allow(non_upper_case_globals)]
         #vis static #ident: lookbook::Preview = lookbook::Preview::new(#name, |cx| {
             use dioxus::prelude::*;
-            use lookbook::Stateful;
+            use lookbook::Control;
 
             fn f<'a>(cx: Scope<'a>) -> Element<'a> {
                 #(#states)*
