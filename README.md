@@ -1,7 +1,25 @@
-# Lookbook
-UI preview framework for Dioxus
+<div align="center">
+<h1>Lookbook</h1>
+<h4>UI preview framework for Dioxus<h4>
+<a href="https://crates.io/crates/lookbook">
+    <img src="https://img.shields.io/crates/v/lookbook?style=flat-square"alt="Crates.io version" />
+</a>
+<a href="https://docs.rs/lookbook/latest/lookbook">
+    <img src="https://img.shields.io/badge/docs-stable-blue.svg?style=flat-square"alt="docs.rs docs" />
+</a>
+<a href="https://dioxus-material.netlify.app/dioxus_material/">
+    <img src="https://img.shields.io/badge/docs-nightly-blue.svg?style=flat-square"
+  alt="nightly docs" />
+</a>
+<a href="https://github.com/matthunz/dioxus-material/actions">
+    <img src="https://github.com/matthunz/dioxus-material/actions/workflows/ci.yml/badge.svg"
+  alt="CI status" />
+</div>
+<div align="center">
+    <a href="https://dioxus-material-lookbook.netlify.app/">Demo</a>
+</div>
 
-[Demo](https://matthunz.github.io/)
+<br>
 
 ```rust
 /// To-Do Task.
