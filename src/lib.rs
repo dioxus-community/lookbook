@@ -13,6 +13,7 @@ pub use ui::{Look, LookBook};
 mod prefixed_route;
 pub(crate) use prefixed_route::PrefixedRoute;
 
+#[doc(hidden)]
 #[derive(Clone, Copy)]
 pub struct Preview {
     name: &'static str,
@@ -31,7 +32,7 @@ thread_local! {
     static HOME: RefCell<Option<Component>> = RefCell::new(None);
 }
 
-pub fn register(name: &'static str, component: Component) {
+fn register(name: &'static str, component: Component) {
     CONTEXT
         .try_with(|cx| cx.borrow_mut().push((name, component)))
         .unwrap();
@@ -52,7 +53,7 @@ fn Home<'a>(cx: Scope<'a>) -> Element<'a> {
     let Child = HOME
         .try_with(|cell| cell.borrow().clone().unwrap())
         .unwrap();
-    render!( Child {} )
+    render!(Child {})
 }
 
 #[component]
@@ -62,5 +63,5 @@ fn ComponentScreen(cx: Scope, name: String) -> Element {
         .try_with(|cx| cx.borrow().iter().find(|(n, _)| n == name).unwrap().clone())
         .unwrap();
 
-    render!( Child {} )
+    render!(Child {})
 }

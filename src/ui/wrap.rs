@@ -1,8 +1,9 @@
 use crate::{prefixed_route::PrefixedRoute, ui::pane::HorizontalPane, Route, CONTEXT};
 use dioxus::prelude::*;
-use dioxus_material::{use_theme, Icon, IconFont, IconKind, TextField};
+use dioxus_material::{use_theme, Icon, IconFont, IconKind};
 use dioxus_router::prelude::*;
 
+/// The main application wrap component.
 #[component]
 pub fn Wrap(cx: Scope) -> Element {
     let query = use_state(cx, || String::new());
@@ -32,10 +33,15 @@ pub fn Wrap(cx: Scope) -> Element {
             padding: "10px 20px",
             font_size: "14px",
             background: "#eeeeee",
-            div { display: "flex", flex_direction: "row", align_items: "center", justify_content: "space-between",
+            div {
+                display: "flex",
+                flex_direction: "row",
+                align_items: "center",
+                justify_content: "space-between",
+                margin: "20px 0",
                 h1 {
                     cursor: "pointer",
-                    margin_bottom: "10px",
+                    margin: "0",
                     onclick: |_| {
                         navigator.push(Route::Home);
                     },
@@ -82,6 +88,7 @@ pub fn Wrap(cx: Scope) -> Element {
     })
 }
 
+/// Navigation rail item component.
 #[component]
 fn NavItem<'a>(cx: Scope<'a>, route: Route, label: &'a str) -> Element<'a> {
     let navigator = use_navigator(cx);

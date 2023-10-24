@@ -1,3 +1,4 @@
+use std::fmt;
 use crate::Route;
 use dioxus::prelude::*;
 use dioxus_router::prelude::*;
@@ -20,8 +21,8 @@ pub struct PrefixedRoute(pub(crate) Route);
 
 pub struct PrefixError;
 
-impl std::fmt::Display for PrefixError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl fmt::Display for PrefixError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.write_str("DummyError")
     }
 }
@@ -43,8 +44,8 @@ impl std::str::FromStr for PrefixedRoute {
     }
 }
 
-impl std::fmt::Display for PrefixedRoute {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl fmt::Display for PrefixedRoute {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let prefix = &*PREFIX.try_with(|cell| *cell.borrow()).unwrap();
         f.write_str(&prefix)?;
         self.0.fmt(f)
