@@ -37,7 +37,14 @@ pub fn Look<'a>(
             gap: "20px",
             background: "#f9f9f9",
             h4 { "Controls" }
-            controls
+            div {
+                flex: 1,
+                display: "flex",
+                flex_direction: "row",
+                gap: "40px",
+                controls
+            }
+
         }
     );
 

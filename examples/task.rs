@@ -3,9 +3,6 @@ use lookbook::LookBook;
 use lookbook_macros::preview;
 
 /// To-Do Task.
-/// ```
-/// fn main
-/// ```
 #[preview]
 pub fn TaskPreview<'a>(
     cx: Scope<'a>,

@@ -55,8 +55,20 @@ pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
                 from_states.push(quote!(let #pat = <#ty>::from_state(cx, &**#pat);));
 
                 controls.push(quote!(div {
+                    display: "flex",
+                    flex_direction: "column",
                     <#ty>::control(cx, #pat_name, #pat)
                     p { #docs },
+
+                    div {
+                        dioxus_material::Chip {
+                            onclick: |_| {
+
+                            },
+                            span { "Default: " }
+                            code { #default }
+                        }
+                    }
                 }));
             }
             _ => todo!(),
