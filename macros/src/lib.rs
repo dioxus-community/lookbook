@@ -2,12 +2,9 @@ use proc_macro::TokenStream;
 use quote::quote;
 use syn::{parse_macro_input, Attribute, Expr, FnArg, ItemFn, Lit, PatType};
 
-#[proc_macro_attribute]
-pub fn preview(attrs: TokenStream, input: TokenStream) -> TokenStream {
-    let item = parse_macro_input!(input as ItemFn);
-
+fn collect_docs(attrs: &[Attribute]) -> String {
     let mut docs = String::new();
-    for attr in &item.attrs {
+    for attr in attrs {
         if attr.path().get_ident().unwrap().to_string() == "doc" {
             let meta = attr.meta.require_name_value().unwrap();
             if let Expr::Lit(expr) = &meta.value {
@@ -18,6 +15,14 @@ pub fn preview(attrs: TokenStream, input: TokenStream) -> TokenStream {
             }
         }
     }
+    docs
+}
+
+#[proc_macro_attribute]
+pub fn preview(attrs: TokenStream, input: TokenStream) -> TokenStream {
+    let item = parse_macro_input!(input as ItemFn);
+
+    let docs = collect_docs(&item.attrs);
 
     let ident = item.sig.ident.clone();
     let block = item.block.clone();
@@ -29,17 +34,21 @@ pub fn preview(attrs: TokenStream, input: TokenStream) -> TokenStream {
     let mut states = Vec::new();
     let mut from_states = Vec::new();
     let mut controls = Vec::new();
-    for input in item.sig.inputs.into_iter().skip(1) {
-        match input {
+    for arg in item.sig.inputs.into_iter().skip(1) {
+        match arg {
             FnArg::Typed(typed) => {
+                let docs = collect_docs(&typed.attrs);
+
                 let ty = typed.ty;
                 let pat = typed.pat;
 
                 states.push(quote!(let #pat = use_state(cx, || <#ty>::state());));
-
                 from_states.push(quote!(let #pat = <#ty>::from_state(cx, &**#pat);));
 
-                controls.push(quote!(<#ty>::control(cx, #pat),));
+                controls.push(quote!(div {
+                    <#ty>::control(cx, #pat)
+                    p { #docs },
+                }));
             }
             _ => todo!(),
         }

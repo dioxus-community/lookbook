@@ -8,7 +8,12 @@ use lookbook_macros::preview;
 /// - label: &str
 /// - content: &str
 #[preview]
-pub fn TaskPreview<'a>(cx: Scope<'a>, label: &'a str, content: &'a str) -> Element<'a> {
+pub fn TaskPreview<'a>(
+    cx: Scope<'a>,
+    /// Test
+    label: &'a str,
+    content: &'a str,
+) -> Element<'a> {
     render!(
         div {
             h4 { "{label}" }
