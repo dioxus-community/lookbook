@@ -4,17 +4,16 @@ use lookbook_macros::preview;
 
 #[preview]
 pub fn TaskPreview<'a>(cx: Scope<'a>, label: &'a str, content: &'a str) -> Element<'a> {
-    render!(div {
-        h4 { "{label}" }
-        p { "{content}" }
-    })
+    render!(
+        div {
+            h4 { "{label}" }
+            p { "{content}" }
+        }
+    )
 }
 
 fn app(cx: Scope) -> Element {
-    render!(LookBook {
-        home: |cx| render!("Home"),
-        previews: [TaskPreview]
-    })
+    render!( LookBook { home: |cx| render!("Home"), previews: [TaskPreview] } )
 }
 
 fn main() {

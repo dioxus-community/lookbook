@@ -49,7 +49,7 @@ fn Home<'a>(cx: Scope<'a>) -> Element<'a> {
     let Child = HOME
         .try_with(|cell| cell.borrow().clone().unwrap())
         .unwrap();
-    render!(Child {})
+    render!( Child {} )
 }
 
 #[component]
@@ -59,7 +59,7 @@ fn ComponentScreen(cx: Scope, name: String) -> Element {
         .try_with(|cx| cx.borrow().iter().find(|(n, _)| n == name).unwrap().clone())
         .unwrap();
 
-    render!(Child {})
+    render!( Child {} )
 }
 
 pub trait Stateful<'a> {
@@ -84,11 +84,13 @@ impl<'a> Stateful<'a> for &'a str {
     }
 
     fn control(cx: Scope<'a>, state: &'a UseState<Self::State>) -> Element<'a> {
-        render!(dioxus_material::TextField {
-            label: "Label",
-            value: state,
-            onchange: move |event: FormEvent| state.set(event.data.value.clone())
-        })
+        render!(
+            dioxus_material::TextField {
+                label: "Label",
+                value: state,
+                onchange: move |event: FormEvent| state.set(event.data.value.clone())
+            }
+        )
     }
 }
 
@@ -104,10 +106,12 @@ impl<'a> Stateful<'a> for u32 {
     }
 
     fn control(cx: Scope<'a>, state: &'a UseState<Self::State>) -> Element<'a> {
-        render!(dioxus_material::TextField {
-            label: "Label",
-            value: "{state}",
-            onchange: move |event: FormEvent| state.set(event.data.value.parse().unwrap())
-        })
+        render!(
+            dioxus_material::TextField {
+                label: "Label",
+                value: "{state}",
+                onchange: move |event: FormEvent| state.set(event.data.value.parse().unwrap())
+            }
+        )
     }
 }

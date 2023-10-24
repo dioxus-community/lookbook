@@ -70,7 +70,7 @@ fn NavItem<'a>(cx: Scope<'a>, route: Route, label: &'a str) -> Element<'a> {
     render!(
         div {
             padding: "10px 15px",
-            border_radius: &*theme.border_radius,
+            border_radius: &*theme.border_radius_small,
             cursor: "pointer",
             background: if is_selected { &theme.secondary_container_color } else { "" },
             onclick: |_| {
