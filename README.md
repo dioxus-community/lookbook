@@ -14,12 +14,12 @@
 <a href="https://github.com/matthunz/dioxus-material/actions">
     <img src="https://github.com/matthunz/dioxus-material/actions/workflows/ci.yml/badge.svg"
   alt="CI status" />
-</a>
+</div>
+<div align="center">
+    <a href="https://dioxus-material-lookbook.netlify.app/">Demo</a>
 </div>
 
 <br>
-
-[Demo](https://matthunz.github.io/)
 
 ```rust
 /// To-Do Task.
