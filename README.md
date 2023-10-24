@@ -51,4 +51,4 @@ fn main() {
 Run with `dx serve`!
 
 ## Running examples
-Run the examples with `dx serve {name}`
+Run the examples with `dx serve --example {name}`.
