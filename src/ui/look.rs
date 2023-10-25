@@ -19,7 +19,6 @@ pub fn Look<'a>(
             flex: 1,
             display: "flex",
             flex_direction: "column",
-            padding: "20px",
             display: "flex",
             justify_content: "center",
             align_items: "center",
@@ -28,13 +27,14 @@ pub fn Look<'a>(
     );
 
     let bottom = render!(
-        div { flex: 1, display: "flex", flex_direction: "column", overflow_y: "auto", padding: "20px", gap: "20px",
+        div { flex: 1, display: "flex", flex_direction: "column", overflow_y: "auto", gap: "20px",
             table { text_align: "left", border_collapse: "collapse",
-                tr { border_bottom: "2px solid #e7e7e7",
-                    Th { "Name" }
-                    Th { "Description" }
-                    Th { "Default" }
-                    Th { "Controls" }
+                tr { height: "60px", color: "#777", border_bottom: "2px solid #e7e7e7",
+                    th { padding_left: "20px", "Name" }
+                    th { "Type" }
+                    th { "Description" }
+                    th { "Default" }
+                    th { "Controls" }
                 }
                 controls
             }
@@ -44,12 +44,4 @@ pub fn Look<'a>(
     render!(
         div { flex: 1, display: "flex", flex_direction: "column", VerticalPane { top: top, bottom: bottom } }
     )
-}
-
-#[component]
-pub fn Th<'a>(cx: Scope<'a>, children: Element<'a>) -> Element<'a> {
-    render!(th {
-        padding_bottom: "10px",
-        children
-    })
 }

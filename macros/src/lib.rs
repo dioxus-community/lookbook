@@ -54,9 +54,11 @@ pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
                 states.push(quote!(let #pat = use_state(cx, || <#ty>::state(#default));));
                 from_states.push(quote!(let #pat = <#ty>::from_state(cx, &**#pat);));
 
+                let ty_name = ty.to_token_stream().to_string();
                 controls.push(quote!(tr {
                     border_bottom: "2px solid #e7e7e7",
-                    td { p { font_weight: 600, #pat_name } }
+                    td { padding_left: "20px", p { color: "#222", font_weight: 600, #pat_name } }
+                    td { code { #ty_name } }
                     td { p { #docs } }
                     td { code { #default } }
                     td { <#ty>::control(cx, #pat_name, #pat) }

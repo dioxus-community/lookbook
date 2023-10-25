@@ -29,16 +29,18 @@ impl<'a> Control<'a> for &'a str {
     fn control(cx: Scope<'a>, name: &'static str, state: &'a UseState<Self::State>) -> Element<'a> {
         let theme = use_theme(cx);
 
-        render!(input {
-            border: "2px solid #e7e7e7",
-            padding: "10px",
-            border_radius: &*theme.border_radius_small,
-            font_size: "{theme.label_small}px",
-            outline: "none",
-            background: "none",
-            value: &***state,
-            oninput: move |event: FormEvent| state.set(event.data.value.clone())
-        })
+        render!(
+            input {
+                border: "2px solid #e7e7e7",
+                padding: "10px",
+                border_radius: &*theme.border_radius_small,
+                font_size: "{theme.label_small}px",
+                outline: "none",
+                background: "none",
+                value: &***state,
+                oninput: move |event: FormEvent| state.set(event.data.value.clone())
+            }
+        )
     }
 }
 
@@ -54,10 +56,12 @@ impl<'a> Control<'a> for u32 {
     }
 
     fn control(cx: Scope<'a>, name: &'static str, state: &'a UseState<Self::State>) -> Element<'a> {
-        render!(dioxus_material::TextField {
-            label: name,
-            value: "{state}",
-            onchange: move |event: FormEvent| state.set(event.data.value.parse().unwrap())
-        })
+        render!(
+            dioxus_material::TextField {
+                label: name,
+                value: "{state}",
+                onchange: move |event: FormEvent| state.set(event.data.value.parse().unwrap())
+            }
+        )
     }
 }
