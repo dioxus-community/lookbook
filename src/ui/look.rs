@@ -22,7 +22,7 @@ pub fn Look<'a>(
             display: "flex",
             justify_content: "center",
             align_items: "center",
-            div { flex: 1, children }
+            children
         }
     );
 
