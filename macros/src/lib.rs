@@ -22,7 +22,7 @@ pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
         match arg {
             FnArg::Typed(typed_arg) => {
                 let mut docs = String::new();
-                let mut default = quote!(None);
+                let mut default = None;
 
                 for attr in typed_arg.attrs {
                     let path = attr.path().get_ident().unwrap().to_string();
@@ -41,7 +41,7 @@ pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
                         if let Meta::NameValue(meta_name_value) = meta {
                             if meta_name_value.path.is_ident("default") {
                                 let value = meta_name_value.value;
-                                default = quote!(Some(#value));
+                                default = Some(quote!(#value));
                             }
                         }
                     }
@@ -51,16 +51,18 @@ pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
                 let pat = typed_arg.pat;
                 let pat_name = pat.to_token_stream().to_string();
 
-                states.push(quote!(let #pat = use_state(cx, || <#ty>::state(#default));));
+                states.push(quote!(let #pat = use_state(cx, || <#ty>::state(Some(#default)));));
                 from_states.push(quote!(let #pat = <#ty>::from_state(cx, &**#pat);));
 
                 let ty_name = ty.to_token_stream().to_string();
+                let default_string = default.map(|tokens| tokens.to_string()).unwrap_or_default();
+
                 controls.push(quote!(tr {
                     border_bottom: "2px solid #e7e7e7",
                     td { padding_left: "20px", p { color: "#222", font_weight: 600, #pat_name } }
                     td { code { #ty_name } }
                     td { p { #docs } }
-                    td { code { #default } }
+                    td { code { #default_string } }
                     td { <#ty>::control(cx, #pat_name, #pat) }
                 }));
             }

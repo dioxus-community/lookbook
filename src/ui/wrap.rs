@@ -68,7 +68,7 @@ pub fn Wrap(cx: Scope) -> Element {
         }
     );
 
-    let right = render!(Outlet::<PrefixedRoute> {});
+    let right = render!( Outlet::<PrefixedRoute> {} );
 
     cx.render(rsx! {
         IconFont {}

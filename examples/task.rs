@@ -16,7 +16,7 @@ pub fn TaskPreview<'a>(
     content: &'a str,
 
     /// List of tags.
-    #[lookbook(default = Json(vec![String::from("A")]))]
+    #[lookbook(default = vec![String::from("A")])]
     tags: Json<Vec<String>>,
 ) -> Element<'a> {
     render!(
@@ -29,10 +29,7 @@ pub fn TaskPreview<'a>(
 }
 
 fn app(cx: Scope) -> Element {
-    render!(LookBook {
-        home: |cx| render!("Home"),
-        previews: [TaskPreview]
-    })
+    render!( LookBook { home: |cx| render!("Home"), previews: [TaskPreview] } )
 }
 
 fn main() {
