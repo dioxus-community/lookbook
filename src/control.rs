@@ -1,4 +1,5 @@
 use dioxus::prelude::*;
+use dioxus_material::use_theme;
 
 /// A controllable property.
 pub trait Control<'a>: Sized {
@@ -26,10 +27,17 @@ impl<'a> Control<'a> for &'a str {
     }
 
     fn control(cx: Scope<'a>, name: &'static str, state: &'a UseState<Self::State>) -> Element<'a> {
-        render!(dioxus_material::TextField {
-            label: name,
-            value: state,
-            onchange: move |event: FormEvent| state.set(event.data.value.clone())
+        let theme = use_theme(cx);
+
+        render!(input {
+            border: "2px solid #e7e7e7",
+            padding: "10px",
+            border_radius: &*theme.border_radius_small,
+            font_size: "{theme.label_small}px",
+            outline: "none",
+            background: "none",
+            value: &***state,
+            oninput: move |event: FormEvent| state.set(event.data.value.clone())
         })
     }
 }

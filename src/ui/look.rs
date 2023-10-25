@@ -28,20 +28,28 @@ pub fn Look<'a>(
     );
 
     let bottom = render!(
-        div {
-            flex: 1,
-            display: "flex",
-            flex_direction: "column",
-            overflow_y: "auto",
-            padding: "20px",
-            gap: "20px",
-            background: "#f9f9f9",
-            h4 { "Controls" }
-            div { flex: 1, display: "flex", flex_direction: "row", gap: "40px", controls }
+        div { flex: 1, display: "flex", flex_direction: "column", overflow_y: "auto", padding: "20px", gap: "20px",
+            table { text_align: "left", border_collapse: "collapse",
+                tr { border_bottom: "2px solid #e7e7e7",
+                    Th { "Name" }
+                    Th { "Description" }
+                    Th { "Default" }
+                    Th { "Controls" }
+                }
+                controls
+            }
         }
     );
 
     render!(
         div { flex: 1, display: "flex", flex_direction: "column", VerticalPane { top: top, bottom: bottom } }
     )
+}
+
+#[component]
+pub fn Th<'a>(cx: Scope<'a>, children: Element<'a>) -> Element<'a> {
+    render!(th {
+        padding_bottom: "10px",
+        children
+    })
 }
