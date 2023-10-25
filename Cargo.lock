@@ -1036,6 +1036,7 @@ name = "lookbook-macros"
 version = "0.1.0"
 dependencies = [
  "dioxus-rsx",
+ "prettyplease",
  "proc-macro2",
  "quote",
  "syn",

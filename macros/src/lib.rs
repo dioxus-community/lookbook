@@ -1,6 +1,6 @@
 use proc_macro::TokenStream;
 use quote::{quote, ToTokens};
-use syn::{parse_macro_input, Attribute, Expr, FnArg, ItemFn, Lit, Meta};
+use syn::{parse_macro_input, spanned::Spanned, Attribute, Expr, FnArg, ItemFn, Lit, Meta};
 
 #[proc_macro_attribute]
 pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
@@ -41,7 +41,7 @@ pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
                         if let Meta::NameValue(meta_name_value) = meta {
                             if meta_name_value.path.is_ident("default") {
                                 let value = meta_name_value.value;
-                                default = Some(quote!(#value));
+                                default = Some(value);
                             }
                         }
                     }
@@ -54,8 +54,10 @@ pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
                 states.push(quote!(let #pat = use_state(cx, || <#ty>::state(Some(#default)));));
                 from_states.push(quote!(let #pat = <#ty>::from_state(cx, &**#pat);));
 
-                let ty_name = ty.to_token_stream().to_string();
-                let default_string = default.map(|tokens| tokens.to_string()).unwrap_or_default();
+                let ty_name = ty.span().source_text().unwrap();
+                let default_string = default
+                    .map(|expr| expr.span().source_text().unwrap())
+                    .unwrap_or_default();
 
                 controls.push(quote!(tr {
                     border_bottom: "2px solid #e7e7e7",
