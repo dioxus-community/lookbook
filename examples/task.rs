@@ -1,5 +1,5 @@
 use dioxus::prelude::*;
-use lookbook::LookBook;
+use lookbook::{Json, LookBook};
 use lookbook_macros::preview;
 
 /// To-Do Task.
@@ -14,17 +14,25 @@ pub fn TaskPreview<'a>(
     /// Content of the task.
     #[lookbook(default = "Central Park")]
     content: &'a str,
+
+    /// List of tags.
+    #[lookbook(default = Json(vec![String::from("A")]))]
+    tags: Json<Vec<String>>,
 ) -> Element<'a> {
     render!(
         div {
             h4 { "{label}" }
             p { "{content}" }
+            div { tags.0.iter().map(|tag| render!(li { "{tag}" })) }
         }
     )
 }
 
 fn app(cx: Scope) -> Element {
-    render!( LookBook { home: |cx| render!("Home"), previews: [TaskPreview] } )
+    render!(LookBook {
+        home: |cx| render!("Home"),
+        previews: [TaskPreview]
+    })
 }
 
 fn main() {

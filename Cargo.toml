@@ -21,3 +21,5 @@ dioxus-resize-observer = { git = "https://github.com/dioxus-community/dioxus-res
 dioxus_markdown = { git = "https://github.com/matthunz/markdown" }
 linkme = "0.3.17"
 lookbook-macros = { path = "macros" }
+serde_json = "1.0.107"
+serde = "1.0.189"

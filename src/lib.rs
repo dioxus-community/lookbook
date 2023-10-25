@@ -4,7 +4,7 @@ use dioxus_router::prelude::*;
 pub use lookbook_macros::preview;
 
 mod control;
-pub use control::Control;
+pub use control::{Control, Json};
 
 mod ui;
 use ui::Wrap;
@@ -53,7 +53,7 @@ fn Home<'a>(cx: Scope<'a>) -> Element<'a> {
     let Child = HOME
         .try_with(|cell| cell.borrow().clone().unwrap())
         .unwrap();
-    render!( Child {} )
+    render!(Child {})
 }
 
 #[component]
@@ -63,5 +63,5 @@ fn ComponentScreen(cx: Scope, name: String) -> Element {
         .try_with(|cx| cx.borrow().iter().find(|(n, _)| n == name).unwrap().clone())
         .unwrap();
 
-    render!( Child {} )
+    render!(Child {})
 }

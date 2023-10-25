@@ -1027,6 +1027,8 @@ dependencies = [
  "dioxus_markdown",
  "linkme",
  "lookbook-macros",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]
