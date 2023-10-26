@@ -65,7 +65,7 @@ pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
                     td { code { #ty_name } }
                     td { p { #docs } }
                     td { code { #default_string } }
-                    td { <#ty>::control(cx, #pat_name, #pat) }
+                    td { padding_right: "20px", <#ty>::control(cx, #pat_name, #pat) }
                 }));
             }
             _ => todo!(),

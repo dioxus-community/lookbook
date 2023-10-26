@@ -34,7 +34,7 @@ pub fn Look<'a>(
                     th { "Type" }
                     th { "Description" }
                     th { "Default" }
-                    th { "Controls" }
+                    th { padding_right: "20px", "Controls" }
                 }
                 controls
             }
