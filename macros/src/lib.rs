@@ -51,7 +51,11 @@ pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
                 let pat = typed_arg.pat;
                 let pat_name = pat.to_token_stream().to_string();
 
-                states.push(quote!(let #pat = use_state(cx, || <#ty>::state(Some(#default)));));
+                
+                states.push(quote!{
+                    let default = <#ty>::state(Some(#default));
+                    let #pat = use_state(cx, || default);
+                });
                 from_states.push(quote!(let #pat = <#ty>::from_state(cx, &**#pat);));
 
                 let ty_name = ty.span().source_text().unwrap();
