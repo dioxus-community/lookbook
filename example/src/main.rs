@@ -1,50 +1,35 @@
-use xilem_web::{
-    elements::html,
-    interfaces::{Element, HtmlElement},
-    style, Action, MessageResult, View, ViewExt,
-};
+use lookbook::{Properties, Property};
+use xilem_web::{elements::html, interfaces::HtmlElement, style, View, ViewExt, ViewMarker};
 
-pub enum SidebarAction {
-    Select(usize),
+#[derive(Clone)]
+struct ButtonPreview {
+    label: String,
 }
 
-impl Action for SidebarAction {}
-
-pub fn sidebar(selected: usize, items: &[&'static str]) -> impl View<(), SidebarAction> {
-    html::ul(
-        items
-            .iter()
-            .enumerate()
-            .map(|(idx, item)| {
-                html::li(*item)
-                    .style((idx == selected).then(|| style("background", "purple")))
-                    .on_click(move |_, _| SidebarAction::Select(idx))
-            })
-            .collect::<Vec<_>>(),
-    )
+impl Properties for ButtonPreview {
+    fn properties(self) -> impl View<Self> + ViewMarker + 'static {
+        self.label
+            .property("Label", String::from("Example"), None)
+            .adapt_state(|me: &mut Self| &mut me.label)
+    }
 }
 
-pub struct Lookbook {
-    selected: usize,
-    previews: Vec<&'static str>,
+fn button_preview(state: &ButtonPreview) -> impl View<ButtonPreview> + ViewMarker {
+    html::button(state.label.clone())
 }
 
-fn app(state: &mut Lookbook) -> impl View<Lookbook> {
-    sidebar(state.selected, &state.previews).adapt(|state: &mut Lookbook, thunk| {
-        if let MessageResult::Action(action) = thunk.call(&mut ()) {
-            match action {
-                SidebarAction::Select(idx) => state.selected = idx,
-            }
-        }
-        xilem_web::MessageResult::Nop
-    })
+fn app(state: &mut ButtonPreview) -> impl View<ButtonPreview> {
+    html::div((state.clone().properties(), button_preview(&state)))
+        .style((style("display", "flex"), style("flex-direction", "row")))
 }
 
 fn main() {
+    console_error_panic_hook::set_once();
+    tracing_wasm::set_as_global_default();
+
     xilem_web::App::new(
-        Lookbook {
-            selected: 0,
-            previews: vec!["Filled button", "Outlined button"],
+        ButtonPreview {
+            label: String::from("Example"),
         },
         app,
     )

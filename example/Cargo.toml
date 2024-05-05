@@ -5,4 +5,7 @@ edition = "2021"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
+console_error_panic_hook = "0.1.7"
+lookbook = { path = "../../lookbook" }
+tracing-wasm = "0.2.1"
 xilem_web = { git = "https://github.com/linebender/xilem" }
