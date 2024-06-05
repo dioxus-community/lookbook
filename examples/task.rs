@@ -2,11 +2,10 @@ use dioxus::prelude::*;
 use lookbook::{Json, LookBook};
 use lookbook_macros::preview;
 
+
 /// To-Do Task.
 #[preview]
-pub fn TaskPreview<'a>(
-    cx: Scope<'a>,
-
+pub fn TaskPreview(
     /// Label of the task.
     #[lookbook(default = "Ice skating")]
     label: &'a str,
@@ -18,23 +17,24 @@ pub fn TaskPreview<'a>(
     /// List of tags.
     #[lookbook(default = vec![String::from("A")])]
     tags: Json<Vec<String>>,
-) -> Element<'a> {
-    render!(
+) -> Element {
+    rsx!(
         div {
             h4 { "{label}" }
             p { "{content}" }
-            div { tags.0.iter().map(|tag| render!(li { "{tag}" })) }
+            div { tags.0.iter().map(|tag| rsx!(li { "{tag}" })) }
         }
     )
 }
 
-fn app(cx: Scope) -> Element {
-    render!(LookBook {
-        home: |cx| render!("Home"),
-        previews: [TaskPreview]
+fn app() -> Element {
+    rsx!(LookBook {
+        home: |cx| rsx!("Home"),
+        previews: []
     })
 }
 
+
 fn main() {
-    dioxus_web::launch(app)
+    dioxus_web::launch::launch_cfg(app, Default::default())
 }

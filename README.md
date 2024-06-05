@@ -25,7 +25,7 @@
 /// To-Do Task.
 #[preview]
 pub fn TaskPreview<'a>(
-    cx: Scope<'a>,
+    
 
     /// Label of the task.
     #[lookbook(default = "Ice skating")]
@@ -34,8 +34,8 @@ pub fn TaskPreview<'a>(
     /// Content of the task.
     #[lookbook(default = "Central Park")]
     content: &'a str,
-) -> Element<'a> {
-    render!(
+) -> Element {
+    rsx!(
         div {
             h4 { "{label}" }
             p { "{content}" }
@@ -55,8 +55,8 @@ Then create a preview like the one above and add it to a lookbook.
 
 ```rust
 fn app(cx: Scope) -> Element {
-    render!(LookBook {
-        home: |cx| render!("Home"),
+    rsx!(LookBook {
+        home: |cx| rsx!("Home"),
         previews: [TaskPreview]
     })
 }

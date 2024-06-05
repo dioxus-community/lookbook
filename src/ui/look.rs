@@ -3,17 +3,16 @@ use dioxus::prelude::*;
 use dioxus_markdown::Markdown;
 
 #[component]
-pub fn Look<'a>(
-    cx: Scope<'a>,
+pub fn Look(
     name: &'static str,
     docs: &'static str,
-    controls: Element<'a>,
-    children: Element<'a>,
-) -> Element<'a> {
-    let top = render!(
+    controls: Element,
+    children: Element,
+) -> Element {
+    let top = rsx!(
         div { padding: "20px",
             h2 { "{name}" }
-            Markdown { content: "{docs}" }
+            Markdown { content: Signal::new(String::from(docs)) }
         }
         div {
             flex: 1,
@@ -22,11 +21,11 @@ pub fn Look<'a>(
             display: "flex",
             justify_content: "center",
             align_items: "center",
-            children
+            { children }
         }
     );
 
-    let bottom = render!(
+    let bottom = rsx!(
         div { flex: 1, display: "flex", flex_direction: "column", overflow_y: "auto", gap: "20px",
             table { text_align: "left", border_collapse: "collapse",
                 tr { height: "60px", color: "#777", border_bottom: "2px solid #e7e7e7",
@@ -36,12 +35,12 @@ pub fn Look<'a>(
                     th { "Default" }
                     th { padding_right: "20px", "Controls" }
                 }
-                controls
+                { controls }
             }
         }
     );
 
-    render!(
+    rsx!(
         div { flex: 1, display: "flex", flex_direction: "column", VerticalPane { top: top, bottom: bottom } }
     )
 }

@@ -1,24 +1,25 @@
 use std::fmt::Arguments;
 
 use dioxus::prelude::*;
+use dioxus_core::{DynamicNode, VText};
 use dioxus_material::use_theme;
 use serde::{Deserialize, Serialize};
 
 /// A controllable property.
-pub trait Control<'a>: Sized {
+pub trait Control: Sized {
     type State;
 
     /// Create the initial state.
     fn state(default: Option<impl Into<Self>>) -> Self::State;
 
     /// Convert the current state to `Self`.
-    fn from_state<T>(cx: Scope<'a, T>, state: &Self::State) -> Self;
+    fn from_state<T>(state: &Self::State) -> Self;
 
     /// Render the controller element.
-    fn control(cx: Scope<'a>, name: &'static str, state: &'a UseState<Self::State>) -> Element<'a>;
+    fn control( name: &'static str, state: Signal<Self::State>) -> Element;
 }
 
-impl<'a> Control<'a> for &'a str {
+impl Control for String {
     type State = String;
 
     fn state(default: Option<impl Into<Self>>) -> Self::State {
@@ -28,14 +29,14 @@ impl<'a> Control<'a> for &'a str {
             .unwrap_or_default()
     }
 
-    fn from_state<T>(cx: Scope<'a, T>, state: &Self::State) -> Self {
-        cx.bump().alloc(state.clone())
+    fn from_state<T>(state: &Self::State) -> Self {
+        state.clone()
     }
 
-    fn control(cx: Scope<'a>, name: &'static str, state: &'a UseState<Self::State>) -> Element<'a> {
-        render!(Input {
-            value: &***state,
-            oninput: move |event: FormEvent| state.set(event.data.value.clone())
+    fn control( name: &'static str, mut state: Signal<Self::State>) -> Element {
+        rsx!(Input {
+            value: state,
+            oninput: move |event: FormEvent| state.set(event.data.value())
         })
     }
 }
@@ -49,19 +50,19 @@ impl<T> From<T> for Json<T> {
     }
 }
 
-impl<'a, T> IntoDynNode<'a> for Json<T>
+impl<T> IntoDynNode for Json<T>
 where
-    T: Clone + Default + Deserialize<'a> + Serialize,
+    T:  Clone + Default + for<'de> Deserialize<'de> + Serialize,
 {
-    fn into_vnode(self, cx: &'a ScopeState) -> dioxus::core::DynamicNode<'a> {
+    fn into_dyn_node(self) -> DynamicNode {
         let s = serde_json::to_string(&self.0).unwrap();
-        cx.make_node(s)
+       DynamicNode::make_node(s)
     }
 }
 
-impl<'a, T> Control<'a> for Json<T>
+impl< T> Control<> for Json<T>
 where
-    T: Clone + Default + Deserialize<'a> + Serialize,
+    T: Clone + Default + for<'de> Deserialize<'de> + Serialize,
 {
     type State = T;
 
@@ -69,18 +70,18 @@ where
         default.map(Into::into).unwrap_or_default().0
     }
 
-    fn from_state<U>(cx: Scope<'a, U>, state: &Self::State) -> Self {
+    fn from_state<U>( state: &Self::State) -> Self {
         Self(state.clone())
     }
 
-    fn control(cx: Scope<'a>, name: &'static str, state: &'a UseState<Self::State>) -> Element<'a> {
-        let json = serde_json::to_string(&**state).unwrap();
+    fn control( name: &'static str, mut state: Signal<Self::State>) -> Element {
+        let json = serde_json::to_string(&*state.read()).unwrap();
 
-        render!(Input {
+        rsx!(Input {
             value: "{json}",
             oninput: move |event: FormEvent| {
-                let value = cx.bump().alloc(event.data.value.clone());
-                if let Ok(new_state) = serde_json::from_str(value) {
+                let value = event.data.value();
+                if let Ok(new_state) = serde_json::from_str(&value) {
                     state.set(new_state);
                 }
             }
@@ -89,17 +90,17 @@ where
 }
 
 #[component]
-fn Input<'a>(cx: Scope<'a>, value: &'a str, oninput: EventHandler<'a, FormEvent>) -> Element<'a> {
-    let theme = use_theme(cx);
+fn Input( value:String, oninput: EventHandler<FormEvent>) -> Element {
+    let theme = use_theme();
 
-    render!(input {
+    rsx!(input {
         border: "2px solid #e7e7e7",
         padding: "10px",
         border_radius: &*theme.border_radius_small,
         font_size: "{theme.label_small}px",
         outline: "none",
         background: "none",
-        value: *value,
+        value: value,
         oninput: move |event| oninput.call(event)
     })
 }

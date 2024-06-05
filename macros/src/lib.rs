@@ -54,7 +54,7 @@ pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
                 
                 states.push(quote!{
                     let default = <#ty>::state(Some(#default));
-                    let #pat = use_state(cx, || default);
+                    let #pat = use_signal(|| default);
                 });
                 from_states.push(quote!(let #pat = <#ty>::from_state(cx, &**#pat);));
 
@@ -94,14 +94,14 @@ pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
             use dioxus::prelude::*;
             use lookbook::Control;
 
-            fn f<'a>(cx: Scope<'a>) -> Element<'a> {
+            fn f() -> Element {
                 #(#states)*
 
-                let controls = cx.render(#controls);
+                let controls = rsx!({#controls});
 
                 #(#from_states)*
 
-                cx.render(#look)
+                rsx!({#look})
             }
             f(cx)
         });

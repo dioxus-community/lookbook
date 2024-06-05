@@ -4,26 +4,24 @@ use dioxus_material::Theme;
 use dioxus_router::prelude::Router;
 
 #[component]
-pub fn LookBook<I: IntoIterator<Item = Preview> + Clone>(
-    cx: Scope,
+pub fn LookBook<I: IntoIterator<Item = Preview> + PartialEq + Clone + 'static>(
     previews: I,
     home: Component,
     prefix: Option<&'static str>,
 ) -> Element {
-    use_effect(cx, (), move |()| {
+    use_effect(move || {
         for preview in previews.clone() {
             register(preview.name, preview.component)
         }
 
-        HOME.try_with(|cell| *cell.borrow_mut() = Some(*home))
+        HOME.try_with(|cell| *cell.borrow_mut() = Some(home))
             .unwrap();
 
-        async move {}
     });
 
-    use_prefix(cx, *prefix);
+    use_prefix(prefix);
 
-    render! {
+    rsx! {
         Theme { Router::<PrefixedRoute> {} }
     }
 }
