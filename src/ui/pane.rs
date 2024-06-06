@@ -37,9 +37,9 @@ pub fn HorizontalPane(left: Element, right: Element) -> Element {
 }
 
 #[component]
-pub fn VerticalPane( top: Element, bottom: Element) -> Element {
+pub fn VerticalPane(top: Element, bottom: Element) -> Element {
     let container_ref = use_mounted();
-    let container_size = use_size( container_ref);
+    let container_size = use_size(container_ref);
 
     let mut height = use_signal(|| 0.);
 

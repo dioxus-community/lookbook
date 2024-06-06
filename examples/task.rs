@@ -2,7 +2,6 @@ use dioxus::prelude::*;
 use lookbook::{Json, LookBook};
 use lookbook_macros::preview;
 
-
 /// To-Do Task.
 #[preview]
 pub fn TaskPreview(
@@ -27,13 +26,13 @@ pub fn TaskPreview(
     )
 }
 
+#[component]
 fn app() -> Element {
     rsx!(LookBook {
         home: |()| rsx!("Home"),
-        previews: []
+        previews: [TaskPreview]
     })
 }
-
 
 fn main() {
     dioxus_web::launch::launch_cfg(app, Default::default())

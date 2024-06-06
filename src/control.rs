@@ -1,7 +1,5 @@
-use std::fmt::Arguments;
-
 use dioxus::prelude::*;
-use dioxus_core::{DynamicNode, VText};
+use dioxus_core::DynamicNode;
 use dioxus_material::use_theme;
 use serde::{Deserialize, Serialize};
 
@@ -16,7 +14,7 @@ pub trait Control: Sized {
     fn from_state(state: &Self::State) -> Self;
 
     /// Render the controller element.
-    fn control( name: &'static str, state: Signal<Self::State>) -> Element;
+    fn control(name: &'static str, state: Signal<Self::State>) -> Element;
 }
 
 impl Control for String {
@@ -33,7 +31,7 @@ impl Control for String {
         state.clone()
     }
 
-    fn control( name: &'static str, mut state: Signal<Self::State>) -> Element {
+    fn control(name: &'static str, mut state: Signal<Self::State>) -> Element {
         rsx!(Input {
             value: state,
             oninput: move |event: FormEvent| state.set(event.data.value())
@@ -52,15 +50,15 @@ impl<T> From<T> for Json<T> {
 
 impl<T> IntoDynNode for Json<T>
 where
-    T:  Clone + Default + for<'de> Deserialize<'de> + Serialize,
+    T: Clone + Default + for<'de> Deserialize<'de> + Serialize,
 {
     fn into_dyn_node(self) -> DynamicNode {
         let s = serde_json::to_string(&self.0).unwrap();
-       DynamicNode::make_node(s)
+        DynamicNode::make_node(s)
     }
 }
 
-impl< T> Control for Json<T>
+impl<T> Control for Json<T>
 where
     T: Clone + Default + for<'de> Deserialize<'de> + Serialize,
 {
@@ -70,11 +68,11 @@ where
         default.map(Into::into).unwrap_or_default().0
     }
 
-    fn from_state( state: &Self::State) -> Self {
+    fn from_state(state: &Self::State) -> Self {
         Self(state.clone())
     }
 
-    fn control( name: &'static str, mut state: Signal<Self::State>) -> Element {
+    fn control(name: &'static str, mut state: Signal<Self::State>) -> Element {
         let json = serde_json::to_string(&*state.read()).unwrap();
 
         rsx!(Input {
@@ -90,7 +88,7 @@ where
 }
 
 #[component]
-fn Input( value:String, oninput: EventHandler<FormEvent>) -> Element {
+fn Input(value: String, oninput: EventHandler<FormEvent>) -> Element {
     let theme = use_theme();
 
     rsx!(input {

@@ -9,14 +9,13 @@ pub fn LookBook<I: IntoIterator<Item = Preview> + PartialEq + Clone + 'static>(
     home: Component,
     prefix: Option<&'static str>,
 ) -> Element {
-    use_effect(move || {
+    use_hook(move || {
         for preview in previews.clone() {
             register(preview.name, preview.component)
         }
 
         HOME.try_with(|cell| *cell.borrow_mut() = Some(home))
             .unwrap();
-
     });
 
     use_prefix(prefix);

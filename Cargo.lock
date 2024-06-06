@@ -747,6 +747,7 @@ dependencies = [
 [[package]]
 name = "dioxus-material"
 version = "0.1.0"
+source = "git+https://github.com/matthunz/dioxus-material#ee0baf96fe41f07ed0b5391584c01b7ba642a346"
 dependencies = [
  "dioxus",
  "dioxus-logger",
@@ -894,6 +895,7 @@ dependencies = [
 [[package]]
 name = "dioxus_markdown"
 version = "0.2.0"
+source = "git+https://github.com/matthunz/markdown#904d78f7c28c68dcbee3e18ed1749212f9344b0c"
 dependencies = [
  "dioxus",
  "pulldown-cmark",

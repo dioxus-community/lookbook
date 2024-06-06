@@ -51,8 +51,7 @@ pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
                 let pat = typed_arg.pat;
                 let pat_name = pat.to_token_stream().to_string();
 
-                
-                states.push(quote!{
+                states.push(quote! {
                     let default = <#ty>::state(Some(#default));
                     let #pat = use_signal(|| default);
                 });
@@ -78,7 +77,6 @@ pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
 
     let controls = render_with_location(quote!(#( #controls )*), name, 0);
 
-  
     let look = render_with_location(
         quote!(
             lookbook::Look { name: #name, docs: #docs, controls: controls,
@@ -94,7 +92,7 @@ pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
         #vis static #ident: lookbook::Preview = lookbook::Preview::new(#name, |()| {
             use dioxus::prelude::*;
             use lookbook::Control;
-            
+
             fn f() -> Element {
                 #(#states)*
 
@@ -105,7 +103,7 @@ pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
                 rsx!({ #look })
             }
             f()
-             
+
         });
     };
     expanded.into()

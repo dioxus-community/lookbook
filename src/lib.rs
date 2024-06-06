@@ -61,9 +61,12 @@ fn Home() -> Element {
 #[component]
 fn ComponentScreen(name: String) -> Element {
     #[allow(non_snake_case)]
-    let (_name, Child) = CONTEXT
-        .try_with(|cx| cx.borrow().iter().find(|(n, _)| *n == name).unwrap().clone())
-        .unwrap();
-
-    rsx!(Child {})
+    if let Some((_name, Child)) = CONTEXT
+        .try_with(|cx| cx.borrow().iter().find(|(n, _)| *n == name).cloned())
+        .unwrap()
+    {
+        rsx!(Child {})
+    } else {
+        None
+    }
 }
