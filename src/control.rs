@@ -13,7 +13,7 @@ pub trait Control: Sized {
     fn state(default: Option<impl Into<Self>>) -> Self::State;
 
     /// Convert the current state to `Self`.
-    fn from_state<T>(state: &Self::State) -> Self;
+    fn from_state(state: &Self::State) -> Self;
 
     /// Render the controller element.
     fn control( name: &'static str, state: Signal<Self::State>) -> Element;
@@ -29,7 +29,7 @@ impl Control for String {
             .unwrap_or_default()
     }
 
-    fn from_state<T>(state: &Self::State) -> Self {
+    fn from_state(state: &Self::State) -> Self {
         state.clone()
     }
 
@@ -60,7 +60,7 @@ where
     }
 }
 
-impl< T> Control<> for Json<T>
+impl< T> Control for Json<T>
 where
     T: Clone + Default + for<'de> Deserialize<'de> + Serialize,
 {
@@ -70,7 +70,7 @@ where
         default.map(Into::into).unwrap_or_default().0
     }
 
-    fn from_state<U>( state: &Self::State) -> Self {
+    fn from_state( state: &Self::State) -> Self {
         Self(state.clone())
     }
 

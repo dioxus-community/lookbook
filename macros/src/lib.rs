@@ -18,7 +18,7 @@ pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
     let mut states = Vec::new();
     let mut from_states = Vec::new();
     let mut controls = Vec::new();
-    for arg in item.sig.inputs.into_iter().skip(1) {
+    for arg in item.sig.inputs {
         match arg {
             FnArg::Typed(typed_arg) => {
                 let mut docs = String::new();
@@ -56,7 +56,7 @@ pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
                     let default = <#ty>::state(Some(#default));
                     let #pat = use_signal(|| default);
                 });
-                from_states.push(quote!(let #pat = <#ty>::from_state(cx, &**#pat);));
+                from_states.push(quote!(let #pat = <#ty>::from_state(&*#pat.read());));
 
                 let ty_name = ty.span().source_text().unwrap();
                 let default_string = default
@@ -69,15 +69,16 @@ pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
                     td { code { #ty_name } }
                     td { p { #docs } }
                     td { code { #default_string } }
-                    td { padding_right: "20px", <#ty>::control(cx, #pat_name, #pat) }
+                    td { padding_right: "20px", { <#ty>::control(#pat_name, #pat) } }
                 }));
             }
             _ => todo!(),
         }
     }
 
-    let controls = render_with_location(quote!(#(#controls)*), name, 0);
+    let controls = render_with_location(quote!(#( #controls )*), name, 0);
 
+  
     let look = render_with_location(
         quote!(
             lookbook::Look { name: #name, docs: #docs, controls: controls,
@@ -90,20 +91,21 @@ pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
 
     let expanded = quote! {
         #[allow(non_upper_case_globals)]
-        #vis static #ident: lookbook::Preview = lookbook::Preview::new(#name, |cx| {
+        #vis static #ident: lookbook::Preview = lookbook::Preview::new(#name, |()| {
             use dioxus::prelude::*;
             use lookbook::Control;
-
+            
             fn f() -> Element {
                 #(#states)*
 
-                let controls = rsx!({#controls});
+                let controls = rsx!(#controls);
 
                 #(#from_states)*
 
-                rsx!({#look})
+                rsx!({ #look })
             }
-            f(cx)
+            f()
+             
         });
     };
     expanded.into()

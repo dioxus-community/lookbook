@@ -8,11 +8,11 @@ use lookbook_macros::preview;
 pub fn TaskPreview(
     /// Label of the task.
     #[lookbook(default = "Ice skating")]
-    label: &'a str,
+    label: String,
 
     /// Content of the task.
     #[lookbook(default = "Central Park")]
-    content: &'a str,
+    content: String,
 
     /// List of tags.
     #[lookbook(default = vec![String::from("A")])]
@@ -22,14 +22,14 @@ pub fn TaskPreview(
         div {
             h4 { "{label}" }
             p { "{content}" }
-            div { tags.0.iter().map(|tag| rsx!(li { "{tag}" })) }
+            div { { tags.0.iter().map(|tag| rsx!(li { "{tag}" })) } }
         }
     )
 }
 
 fn app() -> Element {
     rsx!(LookBook {
-        home: |cx| rsx!("Home"),
+        home: |()| rsx!("Home"),
         previews: []
     })
 }
