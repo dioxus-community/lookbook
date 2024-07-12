@@ -35,5 +35,5 @@ fn app() -> Element {
 }
 
 fn main() {
-    dioxus_web::launch::launch_cfg(app, Default::default())
+    dioxus::launch(app)
 }
