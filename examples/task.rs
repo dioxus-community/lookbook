@@ -4,37 +4,36 @@ use lookbook_macros::preview;
 
 /// To-Do Task.
 #[preview]
-pub fn TaskPreview<'a>(
-    cx: Scope<'a>,
-
+pub fn TaskPreview(
     /// Label of the task.
     #[lookbook(default = "Ice skating")]
-    label: &'a str,
+    label: String,
 
     /// Content of the task.
     #[lookbook(default = "Central Park")]
-    content: &'a str,
+    content: String,
 
     /// List of tags.
     #[lookbook(default = vec![String::from("A")])]
     tags: Json<Vec<String>>,
-) -> Element<'a> {
-    render!(
+) -> Element {
+    rsx!(
         div {
             h4 { "{label}" }
             p { "{content}" }
-            div { tags.0.iter().map(|tag| render!(li { "{tag}" })) }
+            div { { tags.0.iter().map(|tag| rsx!(li { "{tag}" })) } }
         }
     )
 }
 
-fn app(cx: Scope) -> Element {
-    render!(LookBook {
-        home: |cx| render!("Home"),
+#[component]
+fn app() -> Element {
+    rsx!(LookBook {
+        home: |()| rsx!("Home"),
         previews: [TaskPreview]
     })
 }
 
 fn main() {
-    dioxus_web::launch(app)
+    dioxus::launch(app)
 }

@@ -21,26 +21,41 @@
 
 <br>
 
-```rust
+```rs
 /// To-Do Task.
 #[preview]
-pub fn TaskPreview<'a>(
-    cx: Scope<'a>,
-
+pub fn TaskPreview(
     /// Label of the task.
     #[lookbook(default = "Ice skating")]
-    label: &'a str,
+    label: String,
 
     /// Content of the task.
     #[lookbook(default = "Central Park")]
-    content: &'a str,
-) -> Element<'a> {
-    render!(
+    content: String,
+
+    /// List of tags.
+    #[lookbook(default = vec![String::from("A")])]
+    tags: Json<Vec<String>>,
+) -> Element {
+    rsx!(
         div {
             h4 { "{label}" }
             p { "{content}" }
+            div { { tags.0.iter().map(|tag| rsx!(li { "{tag}" })) } }
         }
     )
+}
+
+#[component]
+fn app() -> Element {
+    rsx!(LookBook {
+        home: |()| rsx!("Home"),
+        previews: [TaskPreview]
+    })
+}
+
+fn main() {
+    dioxus::launch(app)
 }
 ```
 
@@ -55,8 +70,8 @@ Then create a preview like the one above and add it to a lookbook.
 
 ```rust
 fn app(cx: Scope) -> Element {
-    render!(LookBook {
-        home: |cx| render!("Home"),
+    rsx!(LookBook {
+        home: |cx| rsx!("Home"),
         previews: [TaskPreview]
     })
 }

@@ -1,3 +1,5 @@
+use std::cell::RefCell;
+
 use dioxus::prelude::*;
 use dioxus_router::prelude::*;
 
@@ -14,7 +16,7 @@ mod prefixed_route;
 pub(crate) use prefixed_route::PrefixedRoute;
 
 #[doc(hidden)]
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub struct Preview {
     name: &'static str,
     component: Component,
@@ -48,20 +50,23 @@ enum Route {
 }
 
 #[component]
-fn Home<'a>(cx: Scope<'a>) -> Element<'a> {
+fn Home() -> Element {
     #[allow(non_snake_case)]
     let Child = HOME
         .try_with(|cell| cell.borrow().clone().unwrap())
         .unwrap();
-    render!(Child {})
+    rsx!(Child {})
 }
 
 #[component]
-fn ComponentScreen(cx: Scope, name: String) -> Element {
+fn ComponentScreen(name: String) -> Element {
     #[allow(non_snake_case)]
-    let (_name, Child) = CONTEXT
-        .try_with(|cx| cx.borrow().iter().find(|(n, _)| n == name).unwrap().clone())
-        .unwrap();
-
-    render!(Child {})
+    if let Some((_name, Child)) = CONTEXT
+        .try_with(|cx| cx.borrow().iter().find(|(n, _)| *n == name).cloned())
+        .unwrap()
+    {
+        rsx!(Child {})
+    } else {
+        None
+    }
 }

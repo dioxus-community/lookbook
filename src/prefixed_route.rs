@@ -1,19 +1,18 @@
 use crate::Route;
 use dioxus::prelude::*;
 use dioxus_router::prelude::*;
-use std::fmt;
+use std::{cell::RefCell, fmt};
 
 thread_local! {
     static PREFIX: RefCell<&'static str> = RefCell::new("");
 }
 
-pub fn use_prefix<T>(cx: Scope<T>, prefix: Option<&'static str>) {
-    use_effect(cx, &prefix, move |_| {
+pub fn use_prefix(prefix: Option<&'static str>) {
+    use_effect(use_reactive(&prefix, move |_| {
         if let Some(prefix) = prefix {
             PREFIX.try_with(|cell| *cell.borrow_mut() = prefix).unwrap();
         }
-        async move {}
-    });
+    }));
 }
 
 #[derive(Clone, PartialEq)]
@@ -55,8 +54,8 @@ impl fmt::Display for PrefixedRoute {
 impl Routable for PrefixedRoute {
     const SITE_MAP: &'static [SiteMapSegment] = &[];
 
-    fn render<'a>(&self, cx: &'a ScopeState, level: usize) -> Element<'a> {
-        self.0.render(cx, level)
+    fn render(&self, level: usize) -> Element {
+        self.0.render(level)
     }
 
     fn static_routes() -> Vec<Self> {
