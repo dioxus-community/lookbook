@@ -67,6 +67,7 @@ fn ComponentScreen(name: String) -> Element {
     {
         rsx!(Child {})
     } else {
-        None
+        // TODO
+        rsx!(div {})
     }
 }

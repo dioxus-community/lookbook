@@ -100,10 +100,9 @@ pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
 
                 #(#from_states)*
 
-                rsx!({ #look })
+                rsx!(div { })
             }
             f()
-
         });
     };
     expanded.into()
