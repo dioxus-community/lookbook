@@ -41,14 +41,10 @@ pub fn VerticalPane(top: Element, bottom: Element) -> Element {
     let container_ref = use_mounted();
     let container_size = use_size(container_ref);
 
-    let mut height = use_signal(|| 0.);
+    let mut height = use_signal(|| container_size.height() / 2.);
 
-    let mut count = use_signal(|| 0);
     use_effect(use_reactive(&container_size.height(), move |h| {
-        if count() <= 2 {
-            height.set(h / 2.);
-            count += 1;
-        }
+        height.set(h / 2.);
     }));
 
     let mut is_dragging = use_signal(|| false);
@@ -64,12 +60,12 @@ pub fn VerticalPane(top: Element, bottom: Element) -> Element {
                 position: "absolute",
                 display: if is_dragging() { "block" } else { "none" },
                 width: "100%",
-                height: "100%",
+                height: "100vh",
                 onmouseup: move |_| { is_dragging.set(false) },
                 prevent_default: if is_dragging() { "onmousedown onmousemove" } else { "" },
-                onmousemove: move |event| height.set(container_size.height() - event.data.client_coordinates().y)
+                onmousemove: move |event| height.set(event.data.client_coordinates().y)
             }
-            { top },
+            section { display: "flex", flex_direction: "column", overflow: "auto", height: "{height}px", {top} },
             div {
                 width: "100%",
                 padding: "5px 0",
@@ -78,7 +74,7 @@ pub fn VerticalPane(top: Element, bottom: Element) -> Element {
                 onmousedown: move |_| { is_dragging.set(true) },
                 div { height: "2px", width: "100%", background: "#ccc" }
             }
-            div { display: "flex", flex_direction: "column", height: "{height}px", overflow: "auto", { bottom } }
+            section { display: "flex", flex_direction: "column", overflow: "auto", { bottom } }
         }
     )
 }

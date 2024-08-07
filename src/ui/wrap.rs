@@ -37,17 +37,17 @@ pub fn Wrap() -> Element {
                 display: "flex",
                 flex_direction: "row",
                 align_items: "center",
-                justify_content: "space-between",
+                justify_content: "flex-start",
                 margin: "20px 0",
+                img { src: "https://avatars.githubusercontent.com/u/79236386?s=200&v=4", width: 50}
                 h1 {
                     cursor: "pointer",
                     margin: "0",
                     onclick: move |_| {
                         navigator.push(Route::Home);
                     },
-                    "Lookbook"
+                    "Dioxus"
                 }
-                Icon { kind: IconKind::Settings }
             }
             input {
                 placeholder: "Search",
@@ -103,7 +103,8 @@ fn NavItem(route: Route, label: String) -> Element {
             padding: "10px 15px",
             border_radius: &*theme.border_radius_small,
             cursor: "pointer",
-            background: if is_selected { &theme.secondary_container_color } else { "" },
+            color: if is_selected { "#fff" } else { "#444" },
+            background: if is_selected { &theme.primary_color } else { "" },
             onclick: move |_| {
                 navigator.push(PrefixedRoute(route.clone()));
             },

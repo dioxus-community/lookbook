@@ -96,11 +96,13 @@ pub fn preview(_attrs: TokenStream, input: TokenStream) -> TokenStream {
             fn f() -> Element {
                 #(#states)*
 
-                let controls = rsx!(#controls);
+                let controls = #controls.ok_or_else(|| todo!());
 
                 #(#from_states)*
 
-                rsx!(div { })
+                rsx!(lookbook::Look { name: #name, docs: #docs, controls: controls,
+                    #block
+                })
             }
             f()
         });
