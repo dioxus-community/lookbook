@@ -69,9 +69,9 @@ cargo add lookbook --git https://github.com/matthunz/lookbook
 Then create a preview like the one above and add it to a lookbook.
 
 ```rust
-fn app(cx: Scope) -> Element {
+fn app() -> Element {
     rsx!(LookBook {
-        home: |cx| rsx!("Home"),
+        home: |()| rsx!("Home"),
         previews: [TaskPreview]
     })
 }
