@@ -63,7 +63,7 @@ fn main() {
 First add Lookbook as a dependency to your project.
 
 ```sh
-cargo add lookbook --git https://github.com/matthunz/lookbook
+cargo add lookbook@v0.2.0-alpha.1
 ```
 
 Then create a preview like the one above and add it to a lookbook.
@@ -77,11 +77,16 @@ fn app() -> Element {
 }
 
 fn main() {
-    dioxus_web::launch(app)
+    dioxus::launch(app)
 }
 ```
 
 Run with `dx serve`!
+
+## Supported platforms
+ - [x] Web
+ - [ ] Desktop/mobile
+ - [ ] Blitz
 
 ## Running examples
 Run the examples with `dx serve --example {name}`.
