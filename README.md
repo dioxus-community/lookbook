@@ -4,12 +4,8 @@
 <a href="https://crates.io/crates/lookbook">
     <img src="https://img.shields.io/crates/v/lookbook?style=flat-square"alt="Crates.io version" />
 </a>
-<a href="https://docs.rs/lookbook/latest/lookbook">
+<a href="https://docs.rs/lookbook/0.2.0-alpha.1/lookbook/index.html">
     <img src="https://img.shields.io/badge/docs-stable-blue.svg?style=flat-square"alt="docs.rs docs" />
-</a>
-<a href="https://dioxus-material.netlify.app/dioxus_material/">
-    <img src="https://img.shields.io/badge/docs-nightly-blue.svg?style=flat-square"
-  alt="nightly docs" />
 </a>
 <a href="https://github.com/matthunz/dioxus-material/actions">
     <img src="https://github.com/matthunz/lookbook/actions/workflows/ci.yml/badge.svg"
