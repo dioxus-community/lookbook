@@ -12,7 +12,7 @@
   alt="nightly docs" />
 </a>
 <a href="https://github.com/matthunz/dioxus-material/actions">
-    <img src="https://github.com/matthunz/dioxus-material/actions/workflows/ci.yml/badge.svg"
+    <img src="https://github.com/matthunz/lookbook/actions/workflows/ci.yml/badge.svg"
   alt="CI status" />
 </div>
 <div align="center">
