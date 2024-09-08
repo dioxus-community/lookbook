@@ -98,7 +98,7 @@ fn Input(value: String, oninput: EventHandler<FormEvent>) -> Element {
         font_size: "{theme.label_small}px",
         outline: "none",
         background: "none",
-        value: value,
+        value,
         oninput: move |event| oninput.call(event)
     })
 }
