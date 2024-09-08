@@ -7,6 +7,7 @@ use dioxus_router::prelude::Router;
 pub fn LookBook<I: IntoIterator<Item = Preview> + PartialEq + Clone + 'static>(
     previews: I,
     home: Component,
+    #[props(optional)]
     prefix: Option<&'static str>,
 ) -> Element {
     use_hook(move || {
@@ -21,10 +22,6 @@ pub fn LookBook<I: IntoIterator<Item = Preview> + PartialEq + Clone + 'static>(
     use_prefix(prefix);
 
     rsx! {
-        Theme {
-            primary_color: "rgb(59, 130, 246)",
-            secondary_container_color: "rgb(233, 96, 32)",
-            Router::<PrefixedRoute> {}
-        }
+        Theme { primary_color: "rgb(59, 130, 246)", secondary_container_color: "rgb(233, 96, 32)", Router::<PrefixedRoute> {} }
     }
 }

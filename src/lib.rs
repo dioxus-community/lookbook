@@ -8,6 +8,8 @@ pub use lookbook_macros::preview;
 mod control;
 pub use control::{Control, Json};
 
+mod markdown;
+
 mod ui;
 use ui::Wrap;
 pub use ui::{Look, LookBook};

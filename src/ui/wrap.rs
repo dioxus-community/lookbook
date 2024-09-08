@@ -39,7 +39,10 @@ pub fn Wrap() -> Element {
                 align_items: "center",
                 justify_content: "flex-start",
                 margin: "20px 0",
-                img { src: "https://avatars.githubusercontent.com/u/79236386?s=200&v=4", width: 50}
+                img {
+                    src: "https://avatars.githubusercontent.com/u/79236386?s=200&v=4",
+                    width: 50
+                }
                 h1 {
                     cursor: "pointer",
                     margin: "0",
@@ -83,7 +86,7 @@ pub fn Wrap() -> Element {
             font_family: "sans-serif",
             margin: 0,
             padding: 0,
-            HorizontalPane { left: left, right: right }
+            HorizontalPane { left, right }
         }
     }
 }

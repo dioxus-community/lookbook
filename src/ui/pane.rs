@@ -20,8 +20,12 @@ pub fn HorizontalPane(left: Element, right: Element) -> Element {
                     width.set(event.data.client_coordinates().x)
                 }
             },
-            div { display: "flex", flex_direction: "row", width: "{width}px", overflow: "auto",
-                { left },
+            div {
+                display: "flex",
+                flex_direction: "row",
+                width: "{width}px",
+                overflow: "auto",
+                { left }
                 div {
                     height: "100%",
                     padding: "0 5px",
@@ -65,7 +69,13 @@ pub fn VerticalPane(top: Element, bottom: Element) -> Element {
                 prevent_default: if is_dragging() { "onmousedown onmousemove" } else { "" },
                 onmousemove: move |event| height.set(event.data.client_coordinates().y)
             }
-            section { display: "flex", flex_direction: "column", overflow: "auto", height: "{height}px", {top} },
+            section {
+                display: "flex",
+                flex_direction: "column",
+                overflow: "auto",
+                height: "{height}px",
+                {top}
+            }
             div {
                 width: "100%",
                 padding: "5px 0",

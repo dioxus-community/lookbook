@@ -1,6 +1,6 @@
 use crate::ui::pane::VerticalPane;
 use dioxus::prelude::*;
-use dioxus_markdown::Markdown;
+use crate::markdown::Markdown;
 
 #[component]
 pub fn Look(
@@ -26,9 +26,17 @@ pub fn Look(
     );
 
     let bottom = rsx!(
-        div { flex: 1, display: "flex", flex_direction: "column", overflow_y: "auto", gap: "20px",
+        div {
+            flex: 1,
+            display: "flex",
+            flex_direction: "column",
+            overflow_y: "auto",
+            gap: "20px",
             table { text_align: "left", border_collapse: "collapse",
-                tr { height: "60px", color: "#777", border_bottom: "2px solid #e7e7e7",
+                tr {
+                    height: "60px",
+                    color: "#777",
+                    border_bottom: "2px solid #e7e7e7",
                     th { padding_left: "20px", "Name" }
                     th { "Type" }
                     th { "Description" }
@@ -41,6 +49,8 @@ pub fn Look(
     );
 
     rsx!(
-        div { flex: 1, display: "flex", flex_direction: "column", VerticalPane { top: top, bottom: bottom } }
+        div { flex: 1, display: "flex", flex_direction: "column",
+            VerticalPane { top, bottom }
+        }
     )
 }

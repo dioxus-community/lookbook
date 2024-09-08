@@ -1,7 +1,9 @@
 [package]
 name = "lookbook-macros"
-version = "0.1.0"
+version = "0.2.0-alpha.1"
 edition = "2021"
+description = "Macros for the Lookbook crate"
+license = "MIT OR Apache-2.0"
 
 [lib]
 proc-macro = true
@@ -9,6 +11,6 @@ proc-macro = true
 [dependencies]
 quote = "1.0.33"
 syn = { version = "2.0.38", features = ["full"] }
-dioxus-rsx = { git = "https://github.com/dioxuslabs/dioxus" }
+dioxus-rsx = "0.5.6"
 proc-macro2 = "1.0.69"
 prettyplease = "0.2.15"
