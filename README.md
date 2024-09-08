@@ -85,8 +85,8 @@ Run with `dx serve`!
 
 ## Supported platforms
  - [x] Web
- - [ ] Desktop/mobile
- - [ ] Blitz
+ - [ ] Desktop/mobile https://github.com/matthunz/lookbook/issues/5
+ - [ ] Blitz https://github.com/matthunz/lookbook/issues/6
 
 ## Running examples
 Run the examples with `dx serve --example {name}`.
